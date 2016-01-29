@@ -41,6 +41,7 @@ public class Map {
 			}
 			System.out.println();			
 		}
+		System.out.println();
 	}
 	public void drawUser(User user){
 		
