@@ -51,6 +51,10 @@ public class Game {
 	}
 
 	private void makeNewUser() {
+		// 방금 map size오버해서 집어넣었는데 들어가졌음
+		// 어디서 에러난 건지 찾아서 고칠것
+		
+		
 		System.out.print("Input user Nmae : ");
 		String userName = sc.next();
 		int x = -1, y = -1;
@@ -74,6 +78,9 @@ public class Game {
 
 	private void moveUser() {
 		for (User user : userList) {
+			//죽은 유저의 경우 이도을 묻지 않는다.
+			if(user.isDead()) continue;
+			
 			System.out.println(user.getUserName() + "님을 어디로 이동 시키겠습니까?");
 			int direction = -1;
 
@@ -88,7 +95,7 @@ public class Game {
 		}
 		// 정렬
 		Collections.sort(userList, new CustomComparator());
-
+		isThereAttack();
 		// 다시 맵에 그리기
 		map.drawMap(userList);
 	}
@@ -96,27 +103,66 @@ public class Game {
 	private void showUsers() {
 		System.out.println("===================");
 		for (User user : userList) {
-			System.out.println("Name : " + user.getUserName());
-			System.out.println("Position : (" + user.getUserLocation().getLocation_y() + ", "
-					+ user.getUserLocation().getLocation_x() + ")");
-			System.out.println("Hp : " + user.getUserHP() + "\n");
-
+			// print User Status라는 것을 그냥 호출
+			user.printUserStatus();
 		}
 		System.out.println("===================");
 	}
 
 	private void isThereAttack() {
-		Location userLoc[] = new Location[userList.size()];
-		for (int i = 0; i < userList.size(); i++) {
-			userLoc[i] = userList.get(i).getUserLocation();
+		// 어떻게 해야할지 감이 안잡힘...
+		
+		/*
+		 * int maxDuplicatedPosition = 3; int map[][][] = new
+		 * int[mapSize_y][mapSize_x][maxDuplicatedPosition];
+		 * 
+		 * //map을 -1로 채움. for(int[][] m : map) for(int[] m2 : m) Arrays.fill(m2,
+		 * -1);
+		 */
+		
+		// 조금 더 쪼개서 생각해보자...
+		// 일단 맵에 겹치는 경우는 제외한다.
+		// 수평으로 붙어있는(x좌표 1차이) 경우만 따지고 공격을 실행한다.
+		User lastUser = null;
+		User currentUser = null;
+		for (int i = 1; i < userList.size(); i++) {
+			lastUser = userList.get(i-1);
+			currentUser = userList.get(i);
+			
+			// 붙어 있는 사람이 죽은 사람은 아닌지 확인한다.
+			if(lastUser.isDead() || currentUser.isDead()) continue;
+			
+			// 붙어있는 유저들이 있는지 찾는다.
+			boolean isNear = lastUser.getUserLocation().getLocation_y() == currentUser.getUserLocation().getLocation_y() && lastUser.getUserLocation().getLocation_x() + 1 == currentUser.getUserLocation().getLocation_x(); 
+			if(isNear){
+				// 사람과 좀비의 관계인지 찾는다.
+				boolean isFirstJombie = lastUser.isJombie();
+				boolean isSecondJombie = currentUser.isJombie();
+				if(isFirstJombie || isSecondJombie){
+					// 공격한다.
+					attack(lastUser, currentUser);
+				}
+			}
 		}
-		// 붙어있는 유저들이 있는지 찾는다.
-
-		// 사람과 좀비의 관계인지 찾는다.
-
-		// 공격한다.
 	}
-
+	
+	private void attack(User user1, User user2){
+		// 사라질 놈을 여기서 결정할까?
+		// hp를 파악해서 0 이하일 경우 죽인다.
+		
+		// user1이 좀비이고 user2가 사람일 경우
+		if(user1.isJombie() && !user2.isJombie()){
+			user2.beAttacked();
+			if(user2.getUserHP() <= 0)
+				user2.setDead(true);
+		}
+		// user1이 사람이고 user2가 좀비인 경우
+		else if(!user1.isJombie() && user2.isJombie()){
+			user1.beAttacked();
+			if(user1.getUserHP() <= 0)
+				user1.setDead(true);
+		}
+	}
 	public class CustomComparator implements Comparator<User> {
 		@Override
 		public int compare(User u1, User u2) {

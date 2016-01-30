@@ -45,7 +45,8 @@ public class Map {
 			for (; last_x < currentUserPosition_x; last_x++) {
 				dot += ". ";
 			}
-			System.out.print(dot + "* ");
+			System.out.print(dot);
+			System.out.print(user.isDead()? ". " : "* ");
 		}
 		++last_x;
 		for (; last_y < mapSize_y; last_y++, last_x = 0) {
