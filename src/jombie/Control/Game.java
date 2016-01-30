@@ -22,26 +22,6 @@ public class Game {
 		sc = new Scanner(System.in);
 	}
 
-	public void setUserLocation(User user) {
-
-	}
-
-	public void getUserLocation(User user) {
-
-	}
-
-	public void setUserHP(User user) {
-
-	}
-
-	public void getUserHP(User user) {
-
-	}
-
-	public void drawMap() {
-
-	}
-
 	public void playGame() {
 
 		int res;
@@ -96,8 +76,7 @@ public class Game {
 		for (User user : userList) {
 			System.out.println(user.getUserName() + "님을 어디로 이동 시키겠습니까?");
 			int direction = -1;
-			
-			//이동 가능한 경로인지는 체크하지않았음
+
 			while (direction < 1 || direction > 4) {
 				System.out.println("1. 북쪽");
 				System.out.println("2. 동쪽");
@@ -105,12 +84,12 @@ public class Game {
 				System.out.println("4. 서쪽");
 				direction = sc.nextInt();
 			}
-			user.setUserLocation(direction-1);
+			user.setUserLocation(direction - 1);
 		}
-		// 여전히 겹쳐지는 문제 해결 안해놨음
-		//정렬
+		// 정렬
 		Collections.sort(userList, new CustomComparator());
-		//다시 맵에 그리기
+
+		// 다시 맵에 그리기
 		map.drawMap(userList);
 	}
 
@@ -124,6 +103,18 @@ public class Game {
 
 		}
 		System.out.println("===================");
+	}
+
+	private void isThereAttack() {
+		Location userLoc[] = new Location[userList.size()];
+		for (int i = 0; i < userList.size(); i++) {
+			userLoc[i] = userList.get(i).getUserLocation();
+		}
+		// 붙어있는 유저들이 있는지 찾는다.
+
+		// 사람과 좀비의 관계인지 찾는다.
+
+		// 공격한다.
 	}
 
 	public class CustomComparator implements Comparator<User> {
