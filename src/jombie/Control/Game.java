@@ -13,13 +13,33 @@ public class Game {
 	static public final int mapSize_y = 10;
 	static public final int mapSize_x = 10;
 	private ArrayList<User> userList = null;
+	
+	private int maxJombie;
+	private int jombieCount;
+	private int personCount;
+	
 	private Map map = null;
-	Scanner sc;
-
+	private Scanner sc;
+	// 좀비를 몇 명 만들겠습니까? 를 먼저 만들고
+	// 좀비들은 알아서 움직임.
+	// 좀비를 공격하는 아이템 구현
+		// 아이템의 좌표는 어디에 저장하고, map에는 어떻게 띄울 것인가?
+	// 나는 계속 피해다님
+	
 	public Game() {
 		userList = new ArrayList<>();
 		map = new Map(mapSize_y, mapSize_x);
 		sc = new Scanner(System.in);
+		jombieCount = 0;
+		personCount = 0;
+	}
+	
+	public Game(ArrayList<User> userList, Map map) {
+		this.userList = userList;
+		this.map = map;
+		sc = new Scanner(System.in);
+		jombieCount = 0;
+		personCount = 0;
 	}
 
 	public void playGame() {
@@ -68,7 +88,10 @@ public class Game {
 			x = sc.nextInt();
 		}
 		Location loc = new Location(y, x);
-		User user = new User(loc, userName);
+		
+		//max좀비를 넘기지 않게 jombie를 생성
+		boolean isJombie = (Math.random() > 0.5)? (jombieCount > maxJombie? true : false) : false;
+		User user = new User(loc, userName, isJombie);
 		userList.add(user);
 		// 정렬
 		Collections.sort(userList, new CustomComparator());
@@ -76,6 +99,25 @@ public class Game {
 		map.drawMap(userList);
 	}
 
+	
+	public boolean makeNewUser(String name, int y, int x) {
+		if(y < 0 || y >= mapSize_y || x < 0 || x >= mapSize_x)	return false;
+		boolean isJombie;
+		if(isJombie = (Math.random() > 0.5)? (jombieCount > maxJombie? true : false) : false){
+			personCount++;
+		}else{
+			jombieCount++;
+		}
+		User user = new User(new Location(y, x), name, isJombie);
+		userList.add(user);
+		// 정렬
+		Collections.sort(userList, new CustomComparator());
+		
+//		map.drawMap(userList);
+		
+		return true;
+	}
+	
 	private void moveUser() {
 		for (User user : userList) {
 			//죽은 유저의 경우 이도을 묻지 않는다.
@@ -100,7 +142,7 @@ public class Game {
 		map.drawMap(userList);
 	}
 
-	private void showUsers() {
+	public void showUsers() {
 		System.out.println("===================");
 		for (User user : userList) {
 			// print User Status라는 것을 그냥 호출
@@ -163,6 +205,24 @@ public class Game {
 				user1.setDead(true);
 		}
 	}
+	
+	// item 생성 메소드
+	private int[] makeItem(){
+		int[] itemLocation = new int[2];
+		
+		// 10%의 확률로 아이템 생성
+		if(Math.random() > 0.9){
+			itemLocation[0] = (int)(Math.random() * mapSize_y);
+			itemLocation[1] = (int)(Math.random() * mapSize_x);
+		}else{
+			itemLocation[0] = -1;
+			itemLocation[1] = -1;
+
+		}
+		return itemLocation; 
+	}
+	
+	
 	public class CustomComparator implements Comparator<User> {
 		@Override
 		public int compare(User u1, User u2) {

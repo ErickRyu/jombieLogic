@@ -23,6 +23,14 @@ public class User implements Comparable<User> {
 		this.isJombie = (Math.random() > 0.5) ? true : false;
 		this.isDead = false;
 	}
+	
+	public User(Location location, String userName, boolean isJombie) {
+		this.location = location;
+		this.userName = userName;
+		this.hp = 100;
+		this.isJombie = isJombie;
+		this.isDead = false;
+	}
 
 	public void setDead(boolean isDead) {
 		this.isDead = isDead;
