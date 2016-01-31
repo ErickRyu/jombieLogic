@@ -6,21 +6,31 @@ import jombie.Model.User;
 import jombie.View.Map;
 
 public class GameTest {
-	String nameDic[] = {
-			"Erick", "John", "Clock", "Cook", "Norm", "Von", "Harris", "Fransis"
-	};
-	//지금 Game쪽이랑 중복되고있음
+	String nameDic[] = { "Erick", "John", "Clock", "Cook", "Norm", "Von", "Harris", "Fransis" };
+	// mapSize 변수들이 지금 Game쪽이랑 중복되고있음
 	private final int mapSize_y = 10;
 	private final int mapSize_x = 10;
-	
-	public GameTest(int maxJombie, int maxUser){
-		ArrayList<User> userList = new ArrayList<>();
-		Map map = new Map(mapSize_y, mapSize_x);
-		Game game = new Game(userList, map);
-		for (int i = 0; i < maxUser; i++){
-			if(!game.makeNewUser(nameDic[i], (int) (Math.random() * game.mapSize_y), (int) (Math.random() * game.mapSize_x))){
+	private ArrayList<User> userList;
+	private Map map;
+	private Game game;
+
+	public GameTest(int maxJombie, int maxUser) {
+		userList = new ArrayList<>();
+		map = new Map(mapSize_y, mapSize_x);
+		game = new Game(userList, map);
+		for (int i = 0; i < maxUser; i++) {
+			if (!game.makeNewUser(nameDic[i], (int) (Math.random() * game.mapSize_y),
+					(int) (Math.random() * game.mapSize_x))) {
 				--i;
 			}
+		}
+		map.drawMap(userList);
+		game.showUsers();
+	}
+
+	public void moveRandom() {
+		for(User user : userList){
+			user.setUserLocation((int)(Math.random()*4));
 		}
 		map.drawMap(userList);
 		game.showUsers();

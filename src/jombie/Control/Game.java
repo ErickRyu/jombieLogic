@@ -79,8 +79,8 @@ public class Game {
 		String userName = sc.next();
 		int x = -1, y = -1;
 
-		while (y < 0 || x >= mapSize_y) {
-			System.out.print("Input user Location X(0이상 " + (mapSize_y - 1) + "이하) : ");
+		while (y < 0 || y >= mapSize_y) {
+			System.out.print("Input user Location Y(0이상 " + (mapSize_y - 1) + "이하) : ");
 			y = sc.nextInt();
 		}
 		while (x < 0 || x >= mapSize_x) {
@@ -208,6 +208,13 @@ public class Game {
 	
 	// item 생성 메소드
 	private int[] makeItem(){
+		// 맵 상에 어떻게 띄울까를 고민중
+		// 맵에 사람과 겹칠경우 어떻게 하지?
+		// 사람을 그냥 띄워놔야겠지?
+		// 언제 아이템을 생성하고 언제 먹지?
+		// 이동 후에 생성하고 현재 위치에서 겹쳐지면 바로 먹을까?
+		// 이동 후에 생성 -> 아이템과 유저 위치 확인
+		
 		int[] itemLocation = new int[2];
 		
 		// 10%의 확률로 아이템 생성

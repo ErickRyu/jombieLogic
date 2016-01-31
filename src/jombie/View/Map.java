@@ -46,7 +46,10 @@ public class Map {
 				dot += ". ";
 			}
 			System.out.print(dot);
-			System.out.print(user.isDead()? ". " : "* ");
+//			System.out.print(user.isDead()? ". " : "* ");
+			
+			// 누구인지 이름의 첫 글자를 표시
+			System.out.print(user.isDead()? ". " : user.getUserName().charAt(0) + " ");
 		}
 		++last_x;
 		for (; last_y < mapSize_y; last_y++, last_x = 0) {

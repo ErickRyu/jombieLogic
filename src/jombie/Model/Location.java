@@ -20,9 +20,9 @@ public class Location {
 	public void moveDirect(int move) {
 		int next_y = location_y + direction_y[move];
 		int next_x = location_x + direction_x[move]; 
-		if(next_y >= 0 && next_y <= Game.mapSize_y)
+		if(next_y >= 0 && next_y <= Game.mapSize_y-1)
 			location_y = next_y;
-		if(next_x >= 0 && next_x <= Game.mapSize_x)
+		if(next_x >= 0 && next_x <= Game.mapSize_x-1)
 			location_x += direction_x[move];
 		
 	}
