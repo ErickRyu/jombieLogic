@@ -1,7 +1,10 @@
 package jombie.Control;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
+import jombie.Control.Game.CustomComparator;
 import jombie.Model.User;
 import jombie.View.Map;
 
@@ -32,7 +35,16 @@ public class GameTest {
 		for(User user : userList){
 			user.setUserLocation((int)(Math.random()*4));
 		}
+		Collections.sort(userList, new CustomComparator());
 		map.drawMap(userList);
 		game.showUsers();
 	}
+	//Game class¿Í Áßº¹µÊ
+	public class CustomComparator implements Comparator<User> {
+		@Override
+		public int compare(User u1, User u2) {
+			return u1.compareTo(u2);
+		}
+	}
+	
 }
