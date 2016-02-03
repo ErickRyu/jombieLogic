@@ -87,11 +87,15 @@ public class Game {
 			System.out.print("Input user Location X(0이상 " + (mapSize_x - 1) + "이하) : ");
 			x = sc.nextInt();
 		}
+		// 다시 위치정보를 물어가면서 중복된 위치 찾진 않음
+		for(User user : userList){
+			boolean isDuplicated = user.getUserLocation().getLocation_y() == y && user.getUserLocation().getLocation_x() == x;
+			if(isDuplicated)
+				return;
+		}
 		Location loc = new Location(y, x);
 		
-		//max좀비를 넘기지 않게 jombie를 생성
-		boolean isJombie = (Math.random() > 0.5)? (jombieCount > maxJombie? true : false) : false;
-		User user = new User(loc, userName, isJombie);
+		User user = new User(loc, userName, makeJombie());
 		userList.add(user);
 		// 정렬
 		Collections.sort(userList, new CustomComparator());
@@ -102,13 +106,12 @@ public class Game {
 	
 	public boolean makeNewUser(String name, int y, int x) {
 		if(y < 0 || y >= mapSize_y || x < 0 || x >= mapSize_x)	return false;
-		boolean isJombie;
-		if(isJombie = (Math.random() > 0.5)? (jombieCount > maxJombie? true : false) : false){
-			personCount++;
-		}else{
-			jombieCount++;
+		for(User user : userList){
+			boolean isDuplicated = user.getUserLocation().getLocation_y() == y && user.getUserLocation().getLocation_x() == x;
+			if(isDuplicated)
+				return false;
 		}
-		User user = new User(new Location(y, x), name, isJombie);
+		User user = new User(new Location(y, x), name, makeJombie());
 		userList.add(user);
 		// 정렬
 		Collections.sort(userList, new CustomComparator());
@@ -119,21 +122,26 @@ public class Game {
 	}
 	
 	private void moveUser() {
+		// 중복되는 위치를 가지지 않도록 변경하려고 함.
+		// 유저를 만들경우에도 중복되는위치 수정해야함ㄴ
 		for (User user : userList) {
 			//죽은 유저의 경우 이도을 묻지 않는다.
 			if(user.isDead()) continue;
-			
-			System.out.println(user.getUserName() + "님을 어디로 이동 시키겠습니까?");
 			int direction = -1;
-
 			while (direction < 1 || direction > 4) {
+				// 여기서 조건을 걸어주고 움직일지?
+				System.out.println(user.getUserName() + "님을 어디로 이동 시키겠습니까?");
 				System.out.println("1. 북쪽");
 				System.out.println("2. 동쪽");
 				System.out.println("3. 남쪽");
 				System.out.println("4. 서쪽");
 				direction = sc.nextInt();
+				// 중복되는 위치로 이동하라고 하지 않았을 경우 반복문 종료
+				if (user.setUserLocation(userList, direction - 1))break;
+				// 중복되는 위치로 이동하라고 했을 경우 다시 반복문 실행
+				else direction = -1;
 			}
-			user.setUserLocation(direction - 1);
+			
 		}
 		// 정렬
 		Collections.sort(userList, new CustomComparator());
@@ -205,6 +213,17 @@ public class Game {
 				user1.setDead(true);
 		}
 	}
+	
+	private boolean makeJombie(){
+		boolean isJombie;
+		if(isJombie = (Math.random() > 0.5)? (jombieCount > maxJombie? true : false) : false){
+			personCount++;
+		}else{
+			jombieCount++;
+		}
+		return isJombie;
+	}
+	
 	
 	// item 생성 메소드
 	private int[] makeItem(){

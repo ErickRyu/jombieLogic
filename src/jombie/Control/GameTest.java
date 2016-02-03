@@ -30,10 +30,9 @@ public class GameTest {
 		map.drawMap(userList);
 		game.showUsers();
 	}
-
 	public void moveRandom() {
 		for(User user : userList){
-			user.setUserLocation((int)(Math.random()*4));
+			user.setUserLocation(userList, (int)(Math.random()*4));
 		}
 		Collections.sort(userList, new CustomComparator());
 		map.drawMap(userList);

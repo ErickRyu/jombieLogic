@@ -1,5 +1,7 @@
 package jombie.Model;
 
+import java.util.ArrayList;
+
 public class User implements Comparable<User> {
 	private Location location;
 	private int hp;
@@ -44,8 +46,8 @@ public class User implements Comparable<User> {
 		return location;
 	}
 
-	public void setUserLocation(int direction) {
-		this.location.moveDirect(direction);
+	public boolean setUserLocation(ArrayList<User> userList, int direction) {
+		return this.location.moveDirect(userList, direction);
 	}
 
 	public String getUserName() {
