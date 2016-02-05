@@ -35,6 +35,8 @@ public class GameTest {
 			user.setUserLocation(userList, (int)(Math.random()*4));
 		}
 		Collections.sort(userList, new CustomComparator());
+		// 공격 호출 안하고 있었다.
+		game.isThereAttack_8D();
 		map.drawMap(userList);
 		game.showUsers();
 	}
