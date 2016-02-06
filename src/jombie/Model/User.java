@@ -98,4 +98,15 @@ public class User implements Comparable<User> {
 		System.out.println(isJombie ? "Jombie" : "Person");
 		System.out.println(isDead ? "Dead\n" : "Alive\n");
 	}
+	
+	public void printUserStatus(boolean isLoginUserJombie) {
+		System.out.println("Name\t :  " + userName);
+		if(!(isLoginUserJombie ^ isJombie))
+			System.out.println("Position : (" + location.getLocation_y() + ", " + location.getLocation_x() + ")");
+		else
+			System.out.println("Position : YOU CAN'T SEE IT");
+		System.out.println("Hp\t :  " + hp);
+		System.out.println(isJombie ? "Jombie" : "Person");
+		System.out.println(isDead ? "Dead\n" : "Alive\n");
+	}
 }

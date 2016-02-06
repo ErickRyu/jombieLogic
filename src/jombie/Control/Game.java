@@ -86,12 +86,12 @@ public class Game {
 		int res;
 		while (true) {
 			System.out.println("**********");
-			System.out.println("1.맵 보기 \n2.위치이동\n3.유저정보\n4.종료");
+			System.out.println("1.맵 보기 \n2.위치이동\n3.유저정보\n4.맵보기(치트모드)\n5.종료");
 			System.out.println("**********");
 			res = sc.nextInt();
 			switch (res) {
 			case 1:
-				map.drawMap(userList);
+				map.drawMap(userList, currentLoginUser.isJombie());
 				break;
 			case 2:
 				moveRandom_ExceptMe();
@@ -100,6 +100,9 @@ public class Game {
 				showUsers();
 				break;
 			case 4:
+				map.drawMap(userList);
+				break;
+			case 5:
 				System.out.println("게임이 종료됩니다.");
 				return;
 			default:
@@ -218,7 +221,8 @@ public class Game {
 	public void showUsers() {
 		System.out.println("===================");
 		for (User user : userList) {
-			user.printUserStatus();
+//			user.printUserStatus();
+			user.printUserStatus(currentLoginUser.isJombie());
 		}
 		System.out.println("===================");
 	}
@@ -371,8 +375,8 @@ public class Game {
 				--i;
 			}
 		}
-		map.drawMap(userList);
-		showUsers();
+//		map.drawMap(userList);
+//		showUsers();
 	}
 
 	// item 생성 메소드

@@ -62,6 +62,63 @@ public class Map {
 		System.out.println();
 	}
 
+	// user에 맞게 맵을 보여줌
+	// 좀비는 좀비만 볼 수 있고, 사람은 사람만 볼 수 있음.
+	public void drawMap(ArrayList<User> userList, boolean isJombie) {
+		int last_y = -1;
+		int last_x = -1;
+		String dot;
+		
+		
+		for (User user : userList) {
+			int currentUserPosition_y = user.getUserLocation().getLocation_y();
+			int currentUserPosition_x = user.getUserLocation().getLocation_x();
+			// 중복되는 경우 출력하지 않으려고 했음
+			// 제대로 처리했는지는 잘 모르겠는데, 일단 화면에 중복되지는 않는다.
+			// 문제가 있을거라고 생각했는데, 아니네..
+			if (last_y == currentUserPosition_y && last_x == currentUserPosition_x)
+				continue;
+			else {
+				last_x++;
+			}
+			if (last_y == -1) {
+				last_y = 0;
+			}
+
+			for (; last_y < currentUserPosition_y; last_y++, last_x = 0) {
+				dot = "";
+				for (; last_x < mapSize_x; last_x++) {
+					dot += ". ";
+				}
+				System.out.println(dot);
+			}
+			dot = "";
+			for (; last_x < currentUserPosition_x; last_x++) {
+				dot += ". ";
+			}
+			System.out.print(dot);
+//			System.out.print(user.isDead()? ". " : "* ");
+			
+			// 누구인지 이름의 첫 글자를 표시
+			// 좀비는 좀비의 위치만, 사람은 사람의 위치만 볼 수 있음.
+			
+			// 가까이 왔을 경우에는 띄우는 걸로 변경하는게 좋을 듯
+			// isAttack쪽 것 그대로 가져와서 구현해야겠음
+			System.out.print(user.isDead()? ". " : !(user.isJombie()^isJombie)? (user.getUserName().charAt(0) + " ") : ". ");
+		}
+		++last_x;
+		for (; last_y < mapSize_y; last_y++, last_x = 0) {
+			dot = "";
+			for (; last_x < mapSize_x; last_x++) {
+				dot += ". ";
+			}
+			System.out.println(dot);
+		}
+		System.out.println();
+	}
+	
+	
+	
 	public void drawUser(User user) {
 
 	}
