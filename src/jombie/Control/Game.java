@@ -10,8 +10,8 @@ import jombie.Model.User;
 import jombie.View.Map;
 
 public class Game {
-	static public final int mapSize_y = 10;
-	static public final int mapSize_x = 10;
+	static public final int mapSize_y = 20;
+	static public final int mapSize_x = 20;
 	private ArrayList<User> userList = null;
 
 	private final int possibleAttackRange = 2;
@@ -19,6 +19,11 @@ public class Game {
 	private int maxJombie = 2;
 	private int jombieCount;
 	private int personCount;
+
+	String nameDic[] = { "Erick", "John", "Clock", "Cook", "Norm", "Von", "Harris", "Fransis" };
+	// mapSize 변수들이 지금 Game쪽이랑 중복되고있음
+
+	private User currentLoginUser;
 
 	private Map map = null;
 	private Scanner sc;
@@ -45,7 +50,6 @@ public class Game {
 	}
 
 	public void playGame() {
-
 		int res;
 		while (true) {
 			System.out.println("**********");
@@ -57,7 +61,40 @@ public class Game {
 				makeNewUser();
 				break;
 			case 2:
-				moveUser();
+				moveUsers();
+				break;
+			case 3:
+				showUsers();
+				break;
+			case 4:
+				System.out.println("게임이 종료됩니다.");
+				return;
+			default:
+				System.out.println("잘못 입력하셨습니다.\nUser choice : " + res);
+				break;
+			}
+		}
+	}
+
+	public void playSingleGame(int maxUser) {
+		showLogin();
+		makeOtherUsers(maxUser-1);
+		askMe();
+	}
+
+	public void askMe() {
+		int res;
+		while (true) {
+			System.out.println("**********");
+			System.out.println("1.맵 보기 \n2.위치이동\n3.유저정보\n4.종료");
+			System.out.println("**********");
+			res = sc.nextInt();
+			switch (res) {
+			case 1:
+				map.drawMap(userList);
+				break;
+			case 2:
+				moveRandom_ExceptMe();
 				break;
 			case 3:
 				showUsers();
@@ -124,7 +161,7 @@ public class Game {
 		return true;
 	}
 
-	private void moveUser() {
+	private void moveUsers() {
 		// 중복되는 위치를 가지지 않도록 변경하려고 함.
 		// 유저를 만들경우에도 중복되는위치 수정해야함ㄴ
 		for (User user : userList) {
@@ -132,18 +169,12 @@ public class Game {
 			if (user.isDead())
 				continue;
 			int direction = -1;
-			while (direction < 1 || direction > 4) {
-				// 여기서 조건을 걸어주고 움직일지?
-				System.out.println(user.getUserName() + "님을 어디로 이동 시키겠습니까?");
-				System.out.println("1. 북쪽");
-				System.out.println("2. 동쪽");
-				System.out.println("3. 남쪽");
-				System.out.println("4. 서쪽");
-				direction = sc.nextInt();
-				// 중복되는 위치로 이동하라고 하지 않았을 경우 반복문 종료
-				if (user.setUserLocation(userList, direction - 1))
+			while (direction < 1 || direction > 9) {
+				direction = askDirection(user);
+				// 이동 가능한 위치로 입력받은 경우 이동시키고 반복문 종료
+				if (user.setUserLocation_8D(userList, direction - 1))
 					break;
-				// 중복되는 위치로 이동하라고 했을 경우 다시 반복문 실행
+				// 중복되거나 이동 불가능한 위치로 입력된 경우 반복문 다시 실행
 				else
 					direction = -1;
 			}
@@ -159,10 +190,34 @@ public class Game {
 		map.drawMap(userList);
 	}
 
+	// 로그인 유저만 위치이동
+	private void moveUser() {
+		int direction = -1;
+		while (direction < 1 || direction > 9) {
+			direction = askDirection(currentLoginUser);
+			// 이동 가능한 위치로 입력받은 경우 이동시키고 반복문 종료
+			if (currentLoginUser.setUserLocation_8D(userList, direction - 1))
+				break;
+			// 중복되거나 이동 불가능한 위치로 입력된 경우 반복문 다시 실행
+			else
+				direction = -1;
+		}
+	}
+
+	// 이동 범위 묻기
+	private int askDirection(User user) {
+		System.out.println(user.getUserName() + "님을 어디로 이동 시키겠습니까?");
+		System.out.println("1.↖   2.↑  3.↗");
+		System.out.println("4.← 5.■  6.→");
+		System.out.println("7.↙   8.↓  9.↘");
+
+		return sc.nextInt();
+	}
+
+	// 유저정보 띄우기
 	public void showUsers() {
 		System.out.println("===================");
 		for (User user : userList) {
-			// print User Status라는 것을 그냥 호출
 			user.printUserStatus();
 		}
 		System.out.println("===================");
@@ -201,7 +256,7 @@ public class Game {
 		// 기본 아이디어
 		// 사용자별로 처음 사용자부터 가져와서 검색한다.
 		// y축으로 비교했을 경우 y가 같으면 계속 탐색한다.
-		// otherY - 1 <= y <- otherY +1 이라면 계속 탐색한다.
+		// otherY - d <= y <- otherY +1 이라면 계속 탐색한다.
 		// y축이 1 초과로 차이가 난다면 탐색을 멈춘다.
 
 		for (User user : userList) {
@@ -217,9 +272,9 @@ public class Game {
 				if (diff_y >= -possibleAttackRange && diff_y <= possibleAttackRange) {
 					int diff_x = other.getUserLocation().getLocation_x() - user.getUserLocation().getLocation_x();
 					if (diff_x >= -possibleAttackRange && diff_x <= possibleAttackRange)
-					// 중복되는 공격을 막기 위해서 user가 좀비인가를 기준으로만 attack을 호출한다.
-					if (user.isJombie())
-						attack(user, other);
+						// 중복되는 공격을 막기 위해서 user가 좀비인가를 기준으로만 attack을 호출한다.
+						if (user.isJombie())
+							attack(user, other);
 
 				}
 			}
@@ -252,6 +307,72 @@ public class Game {
 			personCount++;
 		}
 		return isJombie;
+	}
+
+	// public void moveRandom() {
+	// for (User user : userList) {
+	// user.setUserLocation(userList, (int) (Math.random() * 4));
+	// }
+	// Collections.sort(userList, new CustomComparator()); // 공격 호출 안하고 있었다.
+	// // isThereAttack_8D();
+	// map.drawMap(userList);
+	// showUsers();
+	// }
+
+	public void moveRandom_ExceptMe() {
+		// 로그인 유저(주인공) 제외하고 모든 유저 이동
+		for (User user : userList) {
+			if (user == currentLoginUser)
+				continue;
+			user.setUserLocation_8D(userList, (int) (Math.random() * 9));
+		}
+		moveUser();
+
+		Collections.sort(userList, new CustomComparator());
+		isThereAttack_8D();
+		map.drawMap(userList);
+		showUsers();
+	}
+
+	public void showLogin(){
+		System.out.print("Input user Nmae : ");
+		String userName = sc.next();
+		int x = -1, y = -1;
+
+		while (y < 0 || y >= mapSize_y) {
+			System.out.print("Input user Location Y(0이상 " + (mapSize_y - 1) + "이하) : ");
+			y = sc.nextInt();
+		}
+		while (x < 0 || x >= mapSize_x) {
+			System.out.print("Input user Location X(0이상 " + (mapSize_x - 1) + "이하) : ");
+			x = sc.nextInt();
+		}
+		// 다시 위치정보를 물어가면서 중복된 위치 찾진 않음
+		for (User user : userList) {
+			boolean isDuplicated = user.getUserLocation().getLocation_y() == y
+					&& user.getUserLocation().getLocation_x() == x;
+			if (isDuplicated)
+				return;
+		}
+		Location loc = new Location(y, x);
+
+		User user = new User(loc, userName, makeJombie());
+		userList.add(user);
+		
+		logIn(user);
+	}
+	public void logIn(User loginUser) {
+		currentLoginUser = loginUser;
+	}
+
+	public void makeOtherUsers(int maxUser) {
+		for (int i = 0; i < maxUser; i++) {
+			if (!makeNewUser(nameDic[i], (int) (Math.random() * mapSize_y), (int) (Math.random() * mapSize_x))) {
+				--i;
+			}
+		}
+		map.drawMap(userList);
+		showUsers();
 	}
 
 	// item 생성 메소드

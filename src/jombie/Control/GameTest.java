@@ -16,7 +16,7 @@ public class GameTest {
 	private ArrayList<User> userList;
 	private Map map;
 	private Game game;
-
+	
 	public GameTest(int maxJombie, int maxUser) {
 		userList = new ArrayList<>();
 		map = new Map(mapSize_y, mapSize_x);
@@ -32,7 +32,7 @@ public class GameTest {
 	}
 	public void moveRandom() {
 		for(User user : userList){
-			user.setUserLocation(userList, (int)(Math.random()*4));
+//			user.setUserLocation(userList, (int)(Math.random()*4));
 		}
 		Collections.sort(userList, new CustomComparator());
 		// 공격 호출 안하고 있었다.

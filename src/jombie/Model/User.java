@@ -25,7 +25,7 @@ public class User implements Comparable<User> {
 		this.isJombie = (Math.random() > 0.5) ? true : false;
 		this.isDead = false;
 	}
-	
+
 	public User(Location location, String userName, boolean isJombie) {
 		this.location = location;
 		this.userName = userName;
@@ -46,8 +46,16 @@ public class User implements Comparable<User> {
 		return location;
 	}
 
-	public boolean setUserLocation(ArrayList<User> userList, int direction) {
-		return this.location.moveDirect(userList, direction);
+//	public boolean setUserLocation(ArrayList<User> userList, int direction) {
+//		return this.location.moveDirect(userList, direction);
+//	}
+
+	public boolean setUserLocation_8D(ArrayList<User> userList, int direction) {
+		return this.location.moveDirect_8D(this, userList, direction);
+	}
+
+	public boolean setUserLocation(int y, int x) {
+		return this.location.setLocation(y, x);
 	}
 
 	public String getUserName() {
@@ -58,7 +66,7 @@ public class User implements Comparable<User> {
 	// 나중에 스코어를 매긴다고 했을 때는 여기서 처리해야할 것 같기도하다.
 	// 누가 나를 죽였는지 같은 정보를 위해서는 attack을 game에서 진행하지 않고 User에서 진행 한 뒤에 Game에서는
 	// User별 Kill/Death를 받아오는 식으로 흘러가야 하지 않을까
-	
+
 	// 사람이 hp가 다 달았을 경우 좀비가 되는 경우도 고려해놓아야 할 것 같다.
 	public void attack(User user) {
 		// 자신이 좀비이고 상대가 사람일 경우
@@ -82,11 +90,12 @@ public class User implements Comparable<User> {
 	public int getUserHP() {
 		return this.hp;
 	}
-	public void printUserStatus(){
+
+	public void printUserStatus() {
 		System.out.println("Name\t :  " + userName);
 		System.out.println("Position : (" + location.getLocation_y() + ", " + location.getLocation_x() + ")");
 		System.out.println("Hp\t :  " + hp);
-		System.out.println(isJombie? "Jombie" : "Person");
-		System.out.println(isDead? "Dead\n" : "Alive\n");
+		System.out.println(isJombie ? "Jombie" : "Person");
+		System.out.println(isDead ? "Dead\n" : "Alive\n");
 	}
 }
