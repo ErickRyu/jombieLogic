@@ -64,11 +64,10 @@ public class Map {
 
 	// user에 맞게 맵을 보여줌
 	// 좀비는 좀비만 볼 수 있고, 사람은 사람만 볼 수 있음.
-	public void drawMap(ArrayList<User> userList, boolean isJombie) {
+	public void drawMap(ArrayList<User> userList, boolean isJombie, ArrayList<User> attackableUsers) {
 		int last_y = -1;
 		int last_x = -1;
 		String dot;
-		
 		
 		for (User user : userList) {
 			int currentUserPosition_y = user.getUserLocation().getLocation_y();
@@ -101,10 +100,15 @@ public class Map {
 			
 			// 누구인지 이름의 첫 글자를 표시
 			// 좀비는 좀비의 위치만, 사람은 사람의 위치만 볼 수 있음.
+			// 죽은 경우는 맵에서 띄우지 않음.
+			// LoginUser가 좀비일 때, 공격 가능 위치에 있는 사람은 맵에 띄우게 했음.
+			if(!user.isDead() && (!user.isJombie()^isJombie || attackableUsers.contains(user))){
+				System.out.print(user.getUserName().charAt(0) + " ");
+			}else{
+				System.out.print(". ");
+			}
 			
-			// 가까이 왔을 경우에는 띄우는 걸로 변경하는게 좋을 듯
-			// isAttack쪽 것 그대로 가져와서 구현해야겠음
-			System.out.print(user.isDead()? ". " : !(user.isJombie()^isJombie)? (user.getUserName().charAt(0) + " ") : ". ");
+//			System.out.print(user.isDead()? ". " : !(user.isJombie()^isJombie)? (user.getUserName().charAt(0) + " ") : ". ");
 		}
 		++last_x;
 		for (; last_y < mapSize_y; last_y++, last_x = 0) {

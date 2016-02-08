@@ -19,6 +19,7 @@ public class Game {
 	private int maxJombie = 2;
 	private int jombieCount;
 	private int personCount;
+	private int joinedUser;
 
 	String nameDic[] = { "Erick", "John", "Clock", "Cook", "Norm", "Von", "Harris", "Fransis" };
 	// mapSize 변수들이 지금 Game쪽이랑 중복되고있음
@@ -47,33 +48,7 @@ public class Game {
 		sc = new Scanner(System.in);
 		jombieCount = 0;
 		personCount = 0;
-	}
-
-	public void playGame() {
-		int res;
-		while (true) {
-			System.out.println("**********");
-			System.out.println("1.새 유저 \n2.위치이동\n3.유저정보\n4.종료");
-			System.out.println("**********");
-			res = sc.nextInt();
-			switch (res) {
-			case 1:
-				makeNewUser();
-				break;
-			case 2:
-				moveUsers();
-				break;
-			case 3:
-				showUsers();
-				break;
-			case 4:
-				System.out.println("게임이 종료됩니다.");
-				return;
-			default:
-				System.out.println("잘못 입력하셨습니다.\nUser choice : " + res);
-				break;
-			}
-		}
+		joinedUser = 0;
 	}
 
 	public void playSingleGame(int maxUser) {
@@ -91,7 +66,7 @@ public class Game {
 			res = sc.nextInt();
 			switch (res) {
 			case 1:
-				map.drawMap(userList, currentLoginUser.isJombie());
+				map.drawMap(userList, currentLoginUser.isJombie(), currentLoginUser.attackableUsers);
 				break;
 			case 2:
 				moveRandom_ExceptMe();
@@ -111,7 +86,7 @@ public class Game {
 			}
 		}
 	}
-
+/*	No more Use
 	private void makeNewUser() {
 		// 방금 map size오버해서 집어넣었는데 들어가졌음
 		// 어디서 에러난 건지 찾아서 고칠것
@@ -144,7 +119,7 @@ public class Game {
 
 		map.drawMap(userList);
 	}
-
+*/
 	public boolean makeNewUser(String name, int y, int x) {
 		if (y < 0 || y >= mapSize_y || x < 0 || x >= mapSize_x)
 			return false;
@@ -163,7 +138,7 @@ public class Game {
 
 		return true;
 	}
-
+/* No more Use
 	private void moveUsers() {
 		// 중복되는 위치를 가지지 않도록 변경하려고 함.
 		// 유저를 만들경우에도 중복되는위치 수정해야함ㄴ
@@ -186,13 +161,13 @@ public class Game {
 		// 정렬
 		Collections.sort(userList, new CustomComparator());
 
-		// isThereAttack();
+		// isAttakable();
 		// 8방위 공격으로 변경했음.
-		isThereAttack_8D();
+		isAttakable_8D();
 		// 다시 맵에 그리기
 		map.drawMap(userList);
 	}
-
+*/
 	// 로그인 유저만 위치이동
 	private void moveUser() {
 		int direction = -1;
@@ -226,8 +201,8 @@ public class Game {
 		}
 		System.out.println("===================");
 	}
-
-	private void isThereAttack() {
+/* No more Use
+	private void isAttakable() {
 		// 일단 맵에 겹치는 경우는 제외한다.
 		// 수평으로 붙어있는(x좌표 1차이) 경우만 따지고 공격을 실행한다.
 		User lastUser = null;
@@ -254,16 +229,18 @@ public class Game {
 			}
 		}
 	}
-
+*/
 	// 8방위 공격이 가능한지 살핀다.
-	public void isThereAttack_8D() {
+	public void isAttakable_8D() {
 		// 기본 아이디어
 		// 사용자별로 처음 사용자부터 가져와서 검색한다.
 		// y축으로 비교했을 경우 y가 같으면 계속 탐색한다.
 		// otherY - d <= y <- otherY +1 이라면 계속 탐색한다.
 		// y축이 1 초과로 차이가 난다면 탐색을 멈춘다.
-
+		
 		for (User user : userList) {
+			//attackableUsers 초기화
+			user.attackableUsers = new ArrayList<>();
 			// 죽은 사용자는 넘김
 			if (user.isDead())
 				continue;
@@ -277,8 +254,11 @@ public class Game {
 					int diff_x = other.getUserLocation().getLocation_x() - user.getUserLocation().getLocation_x();
 					if (diff_x >= -possibleAttackRange && diff_x <= possibleAttackRange)
 						// 중복되는 공격을 막기 위해서 user가 좀비인가를 기준으로만 attack을 호출한다.
-						if (user.isJombie())
+						if (user.isJombie()){
+							// 공격 가능한 유저를 attackableUser에 집어넣음
+							user.attackableUsers.add(other);
 							attack(user, other);
+						}
 
 				}
 			}
@@ -312,17 +292,17 @@ public class Game {
 		}
 		return isJombie;
 	}
-
-	// public void moveRandom() {
-	// for (User user : userList) {
-	// user.setUserLocation(userList, (int) (Math.random() * 4));
-	// }
-	// Collections.sort(userList, new CustomComparator()); // 공격 호출 안하고 있었다.
-	// // isThereAttack_8D();
-	// map.drawMap(userList);
-	// showUsers();
-	// }
-
+/*	일단 놔둠
+	 public void moveRandom() {
+	 for (User user : userList) {
+	 user.setUserLocation(userList, (int) (Math.random() * 4));
+	 }
+	 Collections.sort(userList, new CustomComparator()); // 공격 호출 안하고 있었다.
+	 // isAttakable_8D();
+	 map.drawMap(userList);
+	 showUsers();
+	 }
+*/
 	public void moveRandom_ExceptMe() {
 		// 로그인 유저(주인공) 제외하고 모든 유저 이동
 		for (User user : userList) {
@@ -333,9 +313,9 @@ public class Game {
 		moveUser();
 
 		Collections.sort(userList, new CustomComparator());
-		isThereAttack_8D();
-		map.drawMap(userList);
-		showUsers();
+		isAttakable_8D();
+//		map.drawMap(userList);
+//		showUsers();
 	}
 
 	public void showLogin(){

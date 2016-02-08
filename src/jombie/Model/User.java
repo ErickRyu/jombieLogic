@@ -8,6 +8,9 @@ public class User implements Comparable<User> {
 	private String userName;
 	private boolean isJombie;
 	private boolean isDead;
+	public ArrayList<User> attackableUsers;			// private으로 변경
+	
+	
 	private static final int basicDamage = 20;
 
 	@Override
@@ -24,6 +27,7 @@ public class User implements Comparable<User> {
 		this.hp = 100;
 		this.isJombie = (Math.random() > 0.5) ? true : false;
 		this.isDead = false;
+		this.attackableUsers = new ArrayList<>(); 
 	}
 
 	public User(Location location, String userName, boolean isJombie) {
@@ -32,6 +36,7 @@ public class User implements Comparable<User> {
 		this.hp = 100;
 		this.isJombie = isJombie;
 		this.isDead = false;
+		this.attackableUsers = new ArrayList<>(); 
 	}
 
 	public void setDead(boolean isDead) {

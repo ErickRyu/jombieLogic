@@ -1,4 +1,7 @@
 ﻿# jombieLogic
+* 2016_02_08
+  * isThereAttack -> isAttackable로 이름 변경
+  * Login User가 좀비 일 경우, 공격 가능한 위치에 있는 사람은 맵에 표시
 
 * 2016_02_06
   * SinglePlayMode 생성, 로그인하는 유저 위주 진행화면으로 변경
