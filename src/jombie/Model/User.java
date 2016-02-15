@@ -8,10 +8,22 @@ public class User implements Comparable<User> {
 	private String userName;
 	private boolean isJombie;
 	private boolean isDead;
-	public ArrayList<User> attackableUsers;			// private으로 변경
-	
-	
 	private static final int basicDamage = 20;
+	
+	// attackableUser List를 nearEnemy로 변경
+	// 인간, 좀비 모두 자기 근처 attack가능 범위에 있는 적을 볼 수 있도록 변경
+	private ArrayList<User> nearEnemy;
+	
+	public ArrayList<User> getNearEnemy(){
+		return nearEnemy;
+	}
+	public void resetNearEnemy(){
+		nearEnemy = new ArrayList<>();
+	}
+	public void addNearEnemy(User user){
+		nearEnemy.add(user);
+	}
+	
 
 	@Override
 	public int compareTo(User user) {
@@ -27,7 +39,7 @@ public class User implements Comparable<User> {
 		this.hp = 100;
 		this.isJombie = (Math.random() > 0.5) ? true : false;
 		this.isDead = false;
-		this.attackableUsers = new ArrayList<>(); 
+		this.nearEnemy = new ArrayList<>(); 
 	}
 
 	public User(Location location, String userName, boolean isJombie) {
@@ -36,7 +48,7 @@ public class User implements Comparable<User> {
 		this.hp = 100;
 		this.isJombie = isJombie;
 		this.isDead = false;
-		this.attackableUsers = new ArrayList<>(); 
+		this.nearEnemy = new ArrayList<>(); 
 	}
 
 	public void setDead(boolean isDead) {

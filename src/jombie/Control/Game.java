@@ -66,7 +66,7 @@ public class Game {
 			res = sc.nextInt();
 			switch (res) {
 			case 1:
-				map.drawMap(userList, currentLoginUser.isJombie(), currentLoginUser.attackableUsers);
+				map.drawMap(userList, currentLoginUser.isJombie(), currentLoginUser.getNearEnemy());
 				break;
 			case 2:
 				moveRandom_ExceptMe();
@@ -86,40 +86,7 @@ public class Game {
 			}
 		}
 	}
-/*	No more Use
-	private void makeNewUser() {
-		// 방금 map size오버해서 집어넣었는데 들어가졌음
-		// 어디서 에러난 건지 찾아서 고칠것
 
-		System.out.print("Input user Nmae : ");
-		String userName = sc.next();
-		int x = -1, y = -1;
-
-		while (y < 0 || y >= mapSize_y) {
-			System.out.print("Input user Location Y(0이상 " + (mapSize_y - 1) + "이하) : ");
-			y = sc.nextInt();
-		}
-		while (x < 0 || x >= mapSize_x) {
-			System.out.print("Input user Location X(0이상 " + (mapSize_x - 1) + "이하) : ");
-			x = sc.nextInt();
-		}
-		// 다시 위치정보를 물어가면서 중복된 위치 찾진 않음
-		for (User user : userList) {
-			boolean isDuplicated = user.getUserLocation().getLocation_y() == y
-					&& user.getUserLocation().getLocation_x() == x;
-			if (isDuplicated)
-				return;
-		}
-		Location loc = new Location(y, x);
-
-		User user = new User(loc, userName, makeJombie());
-		userList.add(user);
-		// 정렬
-		Collections.sort(userList, new CustomComparator());
-
-		map.drawMap(userList);
-	}
-*/
 	public boolean makeNewUser(String name, int y, int x) {
 		if (y < 0 || y >= mapSize_y || x < 0 || x >= mapSize_x)
 			return false;
@@ -138,36 +105,7 @@ public class Game {
 
 		return true;
 	}
-/* No more Use
-	private void moveUsers() {
-		// 중복되는 위치를 가지지 않도록 변경하려고 함.
-		// 유저를 만들경우에도 중복되는위치 수정해야함ㄴ
-		for (User user : userList) {
-			// 죽은 유저의 경우 이도을 묻지 않는다.
-			if (user.isDead())
-				continue;
-			int direction = -1;
-			while (direction < 1 || direction > 9) {
-				direction = askDirection(user);
-				// 이동 가능한 위치로 입력받은 경우 이동시키고 반복문 종료
-				if (user.setUserLocation_8D(userList, direction - 1))
-					break;
-				// 중복되거나 이동 불가능한 위치로 입력된 경우 반복문 다시 실행
-				else
-					direction = -1;
-			}
 
-		}
-		// 정렬
-		Collections.sort(userList, new CustomComparator());
-
-		// isAttakable();
-		// 8방위 공격으로 변경했음.
-		isAttakable_8D();
-		// 다시 맵에 그리기
-		map.drawMap(userList);
-	}
-*/
 	// 로그인 유저만 위치이동
 	private void moveUser() {
 		int direction = -1;
@@ -201,37 +139,9 @@ public class Game {
 		}
 		System.out.println("===================");
 	}
-/* No more Use
-	private void isAttakable() {
-		// 일단 맵에 겹치는 경우는 제외한다.
-		// 수평으로 붙어있는(x좌표 1차이) 경우만 따지고 공격을 실행한다.
-		User lastUser = null;
-		User currentUser = null;
-		for (int i = 1; i < userList.size(); i++) {
-			lastUser = userList.get(i - 1);
-			currentUser = userList.get(i);
 
-			// 붙어 있는 사람이 죽은 사람은 아닌지 확인한다.
-			if (lastUser.isDead() || currentUser.isDead())
-				continue;
-
-			// 붙어있는 유저들이 있는지 찾는다.
-			boolean isNear = lastUser.getUserLocation().getLocation_y() == currentUser.getUserLocation().getLocation_y()
-					&& lastUser.getUserLocation().getLocation_x() + 1 == currentUser.getUserLocation().getLocation_x();
-			if (isNear) {
-				// 사람과 좀비의 관계인지 찾는다.
-				boolean isFirstJombie = lastUser.isJombie();
-				boolean isSecondJombie = currentUser.isJombie();
-				if (isFirstJombie || isSecondJombie) {
-					// 공격한다.
-					attack(lastUser, currentUser);
-				}
-			}
-		}
-	}
-*/
-	// 8방위 공격이 가능한지 살핀다.
-	public void isAttakable_8D() {
+	// 인간 주변에도 적이 있는지를 살피기 위해 공격가능범위에 적이 있는지 탐색으로 변경 (8방위)
+	public void isNearEnemy() {
 		// 기본 아이디어
 		// 사용자별로 처음 사용자부터 가져와서 검색한다.
 		// y축으로 비교했을 경우 y가 같으면 계속 탐색한다.
@@ -239,9 +149,9 @@ public class Game {
 		// y축이 1 초과로 차이가 난다면 탐색을 멈춘다.
 		
 		for (User user : userList) {
-			//attackableUsers 초기화
-			user.attackableUsers = new ArrayList<>();
-			// 죽은 사용자는 넘김
+			// nearEnemy 초기화
+			user.resetNearEnemy();
+			// 죽은 사용자는 제외
 			if (user.isDead())
 				continue;
 			for (User other : userList) {
@@ -254,17 +164,21 @@ public class Game {
 					int diff_x = other.getUserLocation().getLocation_x() - user.getUserLocation().getLocation_x();
 					if (diff_x >= -possibleAttackRange && diff_x <= possibleAttackRange)
 						// 중복되는 공격을 막기 위해서 user가 좀비인가를 기준으로만 attack을 호출한다.
-						if (user.isJombie()){
+						// 중복되는 경우가 있는지 다시 생각해봐야겠음
+						if (user.isJombie() ^ other.isJombie()){
 							// 공격 가능한 유저를 attackableUser에 집어넣음
-							user.attackableUsers.add(other);
-							attack(user, other);
+							user.addNearEnemy(other);
+							// user가 좀비일 경우는 바로 공격
+							// 주변에 한 명만 공격하도록 변경해야 할 것 같음.
+							if(user.isJombie())
+								attack(user, other);
 						}
-
 				}
 			}
 		}
 	}
-
+	
+	// UserControl, MapControl 따로 만들어야 할 것 같음
 	private void attack(User user1, User user2) {
 		// 사라질 놈을 여기서 결정할까?
 		// hp를 파악해서 0 이하일 경우 죽인다.
@@ -313,7 +227,7 @@ public class Game {
 		moveUser();
 
 		Collections.sort(userList, new CustomComparator());
-		isAttakable_8D();
+		isNearEnemy();
 //		map.drawMap(userList);
 //		showUsers();
 	}

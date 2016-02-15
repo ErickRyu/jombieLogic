@@ -64,7 +64,7 @@ public class Map {
 
 	// user에 맞게 맵을 보여줌
 	// 좀비는 좀비만 볼 수 있고, 사람은 사람만 볼 수 있음.
-	public void drawMap(ArrayList<User> userList, boolean isJombie, ArrayList<User> attackableUsers) {
+	public void drawMap(ArrayList<User> userList, boolean isJombie, ArrayList<User> nearEnemy) {
 		int last_y = -1;
 		int last_x = -1;
 		String dot;
@@ -102,7 +102,8 @@ public class Map {
 			// 좀비는 좀비의 위치만, 사람은 사람의 위치만 볼 수 있음.
 			// 죽은 경우는 맵에서 띄우지 않음.
 			// LoginUser가 좀비일 때, 공격 가능 위치에 있는 사람은 맵에 띄우게 했음.
-			if(!user.isDead() && (!user.isJombie()^isJombie || attackableUsers.contains(user))){
+			// 치트모드로 동작하고있음
+			if(!user.isDead() && (!user.isJombie()^isJombie || nearEnemy.contains(user))){
 				System.out.print(user.getUserName().charAt(0) + " ");
 			}else{
 				System.out.print(". ");
