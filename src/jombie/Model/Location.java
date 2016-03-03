@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import jombie.Control.Game;
 
 public class Location {
-//	static protected final int direction_y[] = { -1, 0, 1, 0 };
-//	static protected final int direction_x[] = { 0, 1, 0, -1 };
-
 	static protected final int direction_8D_y[] = { -1, -1, -1, 0, 0, 0, 1, 1, 1 };
 	static protected final int direction_8D_x[] = { -1, 0, 1, -1, 0, 1, -1, 0, 1 };
 

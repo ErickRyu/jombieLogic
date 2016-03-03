@@ -5,10 +5,5 @@ public class Main {
 		 Game game = new Game();
 //		 game.playGame();
 		 game.playSingleGame(5);
-		 
-//		GameTest gameTest = new GameTest(2, 5);
-//		
-//		for (int i = 0; i < 100; i++)
-//			gameTest.moveRandom();
 	}
 }
