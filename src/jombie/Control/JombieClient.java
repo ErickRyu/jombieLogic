@@ -37,10 +37,9 @@ public class JombieClient {
 	}
 	
 	public void go() {
-		
+
 		JFrame frame = new JFrame("Ludicrously Simple Chat Client");
 		JPanel panel = new JPanel();
-		
 		incoming = new JTextArea(15, 50);
 		incoming.setLineWrap(true);
 		incoming.setWrapStyleWord(true);
@@ -48,25 +47,17 @@ public class JombieClient {
 		JScrollPane qScroller = new JScrollPane(incoming);
 		qScroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		qScroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-//		outgoing = new JTextField(20);
-		JButton[] sendButton = new JButton[9];
-		sendButton[0] = new JButton("¢Ø");
-		sendButton[1] = new JButton("¡è");
-		sendButton[2] = new JButton("¢Ö");
-		sendButton[3] = new JButton("¡ç");
-		sendButton[4] = new JButton("  ");
-		sendButton[5] = new JButton("¡æ");
-		sendButton[6] = new JButton("¢×");
-		sendButton[7] = new JButton("¡é");
-		sendButton[8] = new JButton("¢Ù");
-		
+		outgoing = new JTextField(20);
+		JButton sendButton = new JButton("Send");
+		sendButton.addActionListener(new SendButtonListener());
 		panel.add(qScroller);
-//		panel.add(outgoing);
-		for(int i = 0 ;i < 9; i ++){
-			sendButton[0].addActionListener(new SendButtonListener(i));
-			panel.add(sendButton[i]);
-		}
-		setUpNetworking();
+		panel.add(outgoing);
+		panel.add(sendButton);
+		
+		
+		String ip = "127.0.0.1";
+		String port = "5000";
+		setUpNetworking(ip, port);
 		
 		Thread readerThread = new Thread(new IncomingReader());
 		readerThread.start();
@@ -78,10 +69,15 @@ public class JombieClient {
 	
 	} // end go()
 	
-	public void setUpNetworking() {
-		
+	public void setUpNetworking(String ip, String port) {
 		try{
-			sock = new Socket("127.0.0.1", 5000);
+			sock = new Socket(ip, Integer.parseInt(port));
+			System.out.println("[Info] socket success");
+		} catch(Exception e){
+			System.out.println("[Error] ip or port is not correct");
+		}
+		try{
+			
 			InputStreamReader streamReader = new InputStreamReader(sock.getInputStream());
 			reader = new BufferedReader(streamReader);
 			writer = new PrintWriter(sock.getOutputStream());
@@ -93,20 +89,12 @@ public class JombieClient {
 	} // end setUpNetworking()
 	
 	public class SendButtonListener implements ActionListener {
-		int dicretion;
-		SendButtonListener(int direction){
-			this.dicretion = direction;
-		}
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			try{
-//				writer.print(name + " : ");
-//				writer.println(outgoing.getText());
-				
-				
+				writer.print(name + " : ");
+				writer.println(outgoing.getText());
 				writer.flush();
-				
-				
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
@@ -115,7 +103,6 @@ public class JombieClient {
 			outgoing.requestFocus();
 		}
 	} // end class sendButtonListener
-	
 	public class IncomingReader implements Runnable {
 
 		@Override

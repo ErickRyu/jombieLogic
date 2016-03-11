@@ -13,7 +13,9 @@ public class Game {
 	static public final int mapSize_y = 20;
 	static public final int mapSize_x = 20;
 	private ArrayList<User> userList = null;
-
+	// 소소점 0.1 -> 1
+	// 일일이 입력해주는걸로 변경.
+	// 
 	private final int possibleAttackRange = 2;
 
 	private int maxJombie = 2;
@@ -23,7 +25,8 @@ public class Game {
 
 	String nameDic[] = { "Erick", "John", "Clock", "Cook", "Norm", "Von", "Harris", "Fransis" };
 	// mapSize 변수들이 지금 Game쪽이랑 중복되고있음
-
+	
+	
 	private User currentLoginUser;
 
 	private Map map = null;
