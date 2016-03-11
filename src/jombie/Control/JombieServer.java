@@ -26,7 +26,9 @@ public class JombieServer {
 			ServerSocket serverSock = new ServerSocket(5000);
 
 			while (true) {
+				System.out.println("[Info] trying to connect");
 				Socket clientSock = serverSock.accept();
+				System.out.println("[Info] trying to socketAccept");
 				PrintWriter writer = new PrintWriter(clientSock.getOutputStream());
 				clientOutputStreams.add(writer);
 

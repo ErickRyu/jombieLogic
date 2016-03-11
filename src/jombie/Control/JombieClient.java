@@ -8,7 +8,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -28,10 +35,19 @@ public class JombieClient {
 	PrintWriter writer;
 	Socket sock;
 	static String name;
+	static String ip;
+	static String port;
+	static Map<String, List<Integer>> map = new HashMap<String, List<Integer>>();
+
 	public static void main (String [] args) {
 		Scanner sc = new Scanner(System.in);
-		System.out.println("Input name : ");
+		System.out.print("Input name : ");
 		name = sc.next();
+		
+//		System.out.print("IP : ");
+//		ip = sc.next();
+//		System.out.print("Port : ");
+//		port = sc.next();
 		JombieClient client = new JombieClient ();
 		client.go();
 	}
@@ -57,6 +73,7 @@ public class JombieClient {
 		
 		String ip = "127.0.0.1";
 		String port = "5000";
+		
 		setUpNetworking(ip, port);
 		
 		Thread readerThread = new Thread(new IncomingReader());
@@ -95,6 +112,7 @@ public class JombieClient {
 				writer.print(name + " : ");
 				writer.println(outgoing.getText());
 				writer.flush();
+				
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
@@ -109,10 +127,52 @@ public class JombieClient {
 		public void run() {
 			String message;
 			try {
-				
 				while((message = reader.readLine()) != null) {
-					System.out.println("read " + message);
-					incoming.append(message + "\n");
+					String[] nameAndCommand = message.split(" : ");
+					String name = nameAndCommand[0];
+					String command = nameAndCommand[1];
+					String[] commandAndArguments = command.split(" ");
+
+					if (commandAndArguments[0].equals("MOVE")) {
+						int y = Integer.parseInt(commandAndArguments[1]);
+						int x = Integer.parseInt(commandAndArguments[2]);
+						map.put(name, new ArrayList<Integer>(Arrays.asList(y, x)));
+
+						Map<Integer, Map<Integer, String>> locations = new HashMap<Integer, Map<Integer, String>>();
+						for (Entry<String, List<Integer>> keyAndValue : map.entrySet()) {
+							name = keyAndValue.getKey();
+							List<Integer> yAndX = keyAndValue.getValue();
+							y = yAndX.get(0);
+							x = yAndX.get(1);
+							Map<Integer, String> rows = locations.get(y);
+							if (rows == null) {
+								rows = new HashMap<Integer, String>();
+								locations.put(y, rows);
+							}
+							rows.put(x, name);
+						}
+
+						incoming.setTabSize(2);
+						incoming.setText("");
+						for (int i = 0; i < 20; i++) {
+							StringBuffer stringBuffer = new StringBuffer();
+							for (int j = 0; j < 20; j++) {
+								Map<Integer, String> rows = locations.get(i);
+								if (rows != null) {
+									name = rows.get(j);
+									if (name != null) {
+										stringBuffer.append("\t" + name);
+										continue;
+									}
+								}
+
+								stringBuffer.append("\t.");
+							}
+							incoming.append(stringBuffer.toString());
+							incoming.append("\n");
+						}
+					} else if (commandAndArguments[0].equals("EXIT")) {
+					}
 				}
 			} catch (Exception ex) {
 				ex.printStackTrace();
