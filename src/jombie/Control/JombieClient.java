@@ -2,8 +2,7 @@ package jombie.Control;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -18,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Random;
 import java.util.Scanner;
 
 import javax.swing.JButton;
@@ -28,6 +26,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+
+import jombie.Model.Location;
+import jombie.Model.User;
 
 public class JombieClient {
 
@@ -40,11 +41,12 @@ public class JombieClient {
 	BufferedReader reader;
 	PrintWriter writer;
 	Socket sock;
-	static String name;
+	static String name;					// 현재 로그인 된 유저 name
+	static User currentLoginedUser;		// 현재 로그인 된 유저 객체 저장 (connect 성공 후 저장)
 	static String ip;
 	static String port;
 	static Map<String, List<Integer>> map = new HashMap<String, List<Integer>>();
-
+	static List<User> userList = new ArrayList<>();
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 		System.out.print("Input name : ");
@@ -62,15 +64,19 @@ public class JombieClient {
 		// chatPanel = new ChattingPanel();
 		// chatPanel.settingPanel();
 		JFrame frame = new JFrame("Ludicrously Simple Chat Client");
+		// size 조절이 안됨.
 		JPanel panel = new JPanel();
+		
 		incoming = new JTextArea(15, 50);
 		incoming.setLineWrap(true);
 		incoming.setWrapStyleWord(true);
 		incoming.setEditable(false);
 
 		// test for print dot
+		// size change
 		incomingDot = new JPanel();
-		incomingDot.setSize(20, 20);
+		incomingDot.setSize(100, 200);
+		incomingDot.setBackground(new Color(0));
 		incomingDot.setVisible(true);
 		int width = 20;
 		int height = 20;
@@ -83,12 +89,10 @@ public class JombieClient {
 		JButton sendButton = new JButton("Send");
 		sendButton.addActionListener(new SendButtonListener());
 		panel.add(qScroller);
-
-		panel.add(incomingDot);
-
 		panel.add(outgoing);
 		panel.add(sendButton);
-
+		
+		panel.add(incomingDot);
 		String ip = "127.0.0.1";
 		String port = "5000";
 
@@ -119,6 +123,13 @@ public class JombieClient {
 
 			// chatPanel.getReaderAndWriter(reader, writer);
 			System.out.println("networking established");
+			
+			// network connection 성공 이후 user 생성
+			// 좀비일 확률 30%
+			boolean isJombie = ((int)(Math.random()*10) > 7)? true:false;
+			Location initialLocation = new Location(0,0);	// random Location
+			currentLoginedUser = new User(initialLocation,name, isJombie);
+			
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		} // end try
@@ -142,35 +153,35 @@ public class JombieClient {
 		}
 	} // end class sendButtonListener
 
-	public void paint(int radius) {
-		Graphics2D g = img.createGraphics();
-		g.setColor(Color.orange);
-		g.fillRect(0, 0, 150, 150);
-		g.setColor(Color.black);
+//	public void paint(int radius) {
+//		Graphics2D g = img.createGraphics();
+//		g.setColor(Color.orange);
+//		g.fillRect(0, 0, 150, 150);
+//		g.setColor(Color.black);
+//
+//		g.drawOval((150 / 2 - radius), (150 / 2 - radius), radius * 2, radius * 2);
+//	}
 
-		g.drawOval((150 / 2 - radius), (150 / 2 - radius), radius * 2, radius * 2);
-	}
-
-	private void doDrawing(Graphics g) {
-
-		Graphics2D g2d = (Graphics2D) g;
-
-		g2d.setPaint(Color.blue);
-
-//		int w = getWidth();
-		int w = 20;
-		int h = 20;
-//		int h = getHeight();
-
-		Random r = new Random();
-
-		for (int i = 0; i < 2000; i++) {
-
-			int x = Math.abs(r.nextInt()) % w;
-			int y = Math.abs(r.nextInt()) % h;
-			g2d.drawLine(x, y, x, y);
-		}
-	}
+//	private void doDrawing(Graphics g) {
+//
+//		Graphics2D g2d = (Graphics2D) g;
+//
+//		g2d.setPaint(Color.blue);
+//
+////		int w = getWidth();
+//		int w = 20;
+//		int h = 20;
+////		int h = getHeight();
+//
+//		Random r = new Random();
+//
+//		for (int i = 0; i < 2000; i++) {
+//
+//			int x = Math.abs(r.nextInt()) % w;
+//			int y = Math.abs(r.nextInt()) % h;
+//			g2d.drawLine(x, y, x, y);
+//		}
+//	}
 
 	public class IncomingReader implements Runnable {
 
@@ -180,7 +191,7 @@ public class JombieClient {
 			try {
 				while ((message = reader.readLine()) != null) {
 
-					paint(2);
+//					paint(2);
 //					incomingDot.
 
 					// Graphics2D g2d = (Graphics2D)incomingDot;
@@ -191,12 +202,26 @@ public class JombieClient {
 					String name = nameAndCommand[0];
 					String command = nameAndCommand[1];
 					String[] commandAndArguments = command.split(" ");
-
+						
+					
+					// map 형식 변경   
+					// name -> user 저장
+					// map<int, map<int, string>>
+					// 1. map으로 변경시킬지
+					// 2. list에 저장할지
+					// 일단 list에 저장 (static으로 지정)
+					
+					
+					//기존 Game에서 돌아가던 명령들은 수동적인 것
+					// 현재 수정된 MOVE 명령은 능동적인 것
+					// 나중에 수정하기가 편한 것 같음
 					if (commandAndArguments[0].equals("MOVE")) {
 						int y = Integer.parseInt(commandAndArguments[1]);
 						int x = Integer.parseInt(commandAndArguments[2]);
 						map.put(name, new ArrayList<Integer>(Arrays.asList(y, x)));
-
+						
+						// map에 name을 key로 가지도록 저장시켜놓으면 딱히 User객체를 담을 필요가 없는 것 같은데.
+//						List<User> userList = new ArrayList<>();
 						Map<Integer, Map<Integer, String>> locations = new HashMap<Integer, Map<Integer, String>>();
 						for (Entry<String, List<Integer>> keyAndValue : map.entrySet()) {
 							name = keyAndValue.getKey();
@@ -213,6 +238,9 @@ public class JombieClient {
 
 						incoming.setTabSize(2);
 						incoming.setText("");
+						// for(User user : userList) 탐색하면서 setMarker 찍으려고 했는데
+						// 딱히 순차적일 필요가 없는 것 같음
+						// isNearEnemy쪽, Attack쪽만 조금 더 생각을 해봐야겟음.
 						for (int i = 0; i < 20; i++) {
 							StringBuffer stringBuffer = new StringBuffer();
 							for (int j = 0; j < 20; j++) {
