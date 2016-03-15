@@ -13,36 +13,34 @@ public class Game {
 	static public final int mapSize_y = 20;
 	static public final int mapSize_x = 20;
 	private ArrayList<User> userList = null;
-	// ¼Ò¼ÒÁ¡ 0.1 -> 1
-	// ÀÏÀÏÀÌ ÀÔ·ÂÇØÁÖ´Â°É·Î º¯°æ.
+	// å ìŒ€ì‡½ì˜™å ì™ì˜™ 0.1 -> 1
+	// å ì™ì˜™å ì™ì˜™å ì™ì˜™ å ìŒ‰ë¤„ì˜™å ì™ì˜™å ìŒëŠ”ê±¸ë¤„ì˜™ å ì™ì˜™å ì™ì˜™.
 	// 
 	private final int possibleAttackRange = 2;
 
 	private int maxJombie = 2;
 	private int jombieCount;
-	private int personCount;
-	private int joinedUser;
 
 	String nameDic[] = { "Erick", "John", "Clock", "Cook", "Norm", "Von", "Harris", "Fransis" };
-	// mapSize º¯¼öµéÀÌ Áö±İ GameÂÊÀÌ¶û Áßº¹µÇ°íÀÖÀ½
+	// mapSize å ì™ì˜™å ì™ì˜™å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™ Gameå ì™ì˜™å ì‹±ë°ì˜™ å ìŒ©ë¸ì˜™å ì‹¤ê³¤ì˜™å ì™ì˜™å ì™ì˜™
 	
 	
 	private User currentLoginUser;
 
 	private Map map = null;
 	private Scanner sc;
-	// Á»ºñ¸¦ ¸î ¸í ¸¸µé°Ú½À´Ï±î? ¸¦ ¸ÕÀú ¸¸µé°í
-	// Á»ºñµéÀº ¾Ë¾Æ¼­ ¿òÁ÷ÀÓ.
-	// Á»ºñ¸¦ °ø°İÇÏ´Â ¾ÆÀÌÅÛ ±¸Çö
-	// ¾ÆÀÌÅÛÀÇ ÁÂÇ¥´Â ¾îµğ¿¡ ÀúÀåÇÏ°í, map¿¡´Â ¾î¶»°Ô ¶ç¿ï °ÍÀÎ°¡?
-	// ³ª´Â °è¼Ó ÇÇÇØ´Ù´Ô
+	// å ì™ì˜™å ì™ì˜™ å ì™ì˜™ å ì™ì˜™ å ì™ì˜™å ì™ì˜™é»´å ì™ì˜™æ­å ï¿½? å ì™ì˜™ å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™å ï¿½
+	// å ì™ì˜™å ì™ì˜™å ì™ì˜™å ï¿½ å ì‹¯ì•„ì‡½ì˜™ å ì™ì˜™å ì™ì˜™å ì™ì˜™.
+	// å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™å ì‹¹ëŒì˜™ å ì™ì˜™å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™
+	// å ì™ì˜™å ì™ì˜™å ì™ì˜™å ì™ì˜™ å ì™ì˜™í‘œå ì™ì˜™ å ì™ì˜™å ï¿½ å ì™ì˜™å ì™ì˜™å ì‹¹ê³¤ì˜™, mapå ì™ì˜™å ì™ì˜™ å ì˜ë–»å ì™ì˜™ å ì™ì˜™å ï¿½ å ì™ì˜™å ì‹¸ê³¤ì˜™?
+	// å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ï¿½ å ì™ì˜™å ìŒ”ë‹¤ëŒì˜™
 
 	public Game() {
 		userList = new ArrayList<>();
 		map = new Map(mapSize_y, mapSize_x);
 		sc = new Scanner(System.in);
 		jombieCount = 0;
-		personCount = 0;
+//		personCount = 0;
 	}
 
 	public Game(ArrayList<User> userList, Map map) {
@@ -50,8 +48,8 @@ public class Game {
 		this.map = map;
 		sc = new Scanner(System.in);
 		jombieCount = 0;
-		personCount = 0;
-		joinedUser = 0;
+//		personCount = 0;
+//		joinedUser = 0;
 	}
 
 	public void playSingleGame(int maxUser) {
@@ -64,7 +62,7 @@ public class Game {
 		int res;
 		while (true) {
 			System.out.println("**********");
-			System.out.println("1.¸Ê º¸±â \n2.À§Ä¡ÀÌµ¿\n3.À¯ÀúÁ¤º¸\n4.¸Êº¸±â(Ä¡Æ®¸ğµå)\n5.Á¾·á");
+			System.out.println("1.å ì™ì˜™ å ì™ì˜™å ì™ì˜™ \n2.å ì™ì˜™ì¹˜å ì‹±ë“¸ì˜™\n3.å ì™ì˜™å ì™ì˜™å ì™ì˜™å ì™ì˜™\n4.å ì‹­ë¸ì˜™å ì™ì˜™(ì¹˜íŠ¸å ì™ì˜™å ï¿½)\n5.å ì™ì˜™å ì™ì˜™");
 			System.out.println("**********");
 			res = sc.nextInt();
 			switch (res) {
@@ -81,10 +79,10 @@ public class Game {
 				map.drawMap(userList);
 				break;
 			case 5:
-				System.out.println("°ÔÀÓÀÌ Á¾·áµË´Ï´Ù.");
+				System.out.println("å ì™ì˜™å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™çµ³æ±‚å ï¿½.");
 				return;
 			default:
-				System.out.println("Àß¸ø ÀÔ·ÂÇÏ¼Ì½À´Ï´Ù.\nUser choice : " + res);
+				System.out.println("å ìŒ©ëªŒì˜™ å ìŒ‰ë¤„ì˜™å ì‹¹ì…¨ì™ì˜™å ì‹¹ëŒì˜™.\nUser choice : " + res);
 				break;
 			}
 		}
@@ -101,7 +99,7 @@ public class Game {
 		}
 		User user = new User(new Location(y, x), name, makeJombie());
 		userList.add(user);
-		// Á¤·Ä
+		// å ì™ì˜™å ì™ì˜™
 		Collections.sort(userList, new CustomComparator());
 
 		// map.drawMap(userList);
@@ -109,31 +107,31 @@ public class Game {
 		return true;
 	}
 
-	// ·Î±×ÀÎ À¯Àú¸¸ À§Ä¡ÀÌµ¿
+	// å ì‹¸ê¹ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™å ì™ì˜™ å ì™ì˜™ì¹˜å ì‹±ë“¸ì˜™
 	private void moveUser() {
 		int direction = -1;
 		while (direction < 1 || direction > 9) {
 			direction = askDirection(currentLoginUser);
-			// ÀÌµ¿ °¡´ÉÇÑ À§Ä¡·Î ÀÔ·Â¹ŞÀº °æ¿ì ÀÌµ¿½ÃÅ°°í ¹İº¹¹® Á¾·á
+			// å ì‹±ë“¸ì˜™ å ì™ì˜™å ì™ì˜™å ì™ì˜™ å ì™ì˜™ì¹˜å ì™ì˜™ å ìŒ‰ë ¥ë±„ì˜™å ì™ì˜™ å ì™ì˜™å ï¿½ å ì‹±ë“¸ì˜™å ì™ì˜™í‚¤å ì™ì˜™ å ìŒ¥ë¸ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™
 			if (currentLoginUser.setUserLocation_8D(userList, direction - 1))
 				break;
-			// Áßº¹µÇ°Å³ª ÀÌµ¿ ºÒ°¡´ÉÇÑ À§Ä¡·Î ÀÔ·ÂµÈ °æ¿ì ¹İº¹¹® ´Ù½Ã ½ÇÇà
+			// å ìŒ©ë¸ì˜™å ì‹¤ê±°ë†‚ì˜™ å ì‹±ë“¸ì˜™ å ìŒ€ê³¤ì˜™å ì™ì˜™å ì™ì˜™ å ì™ì˜™ì¹˜å ì™ì˜™ å ìŒ‰ë ¥ë“¸ì˜™ å ì™ì˜™å ï¿½ å ìŒ¥ë¸ì˜™å ì™ì˜™ å ìŒ•ì™ì˜™ å ì™ì˜™å ì™ì˜™
 			else
 				direction = -1;
 		}
 	}
 
-	// ÀÌµ¿ ¹üÀ§ ¹¯±â
+	// å ì‹±ë“¸ì˜™ å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™
 	private int askDirection(User user) {
-		System.out.println(user.getUserName() + "´ÔÀ» ¾îµğ·Î ÀÌµ¿ ½ÃÅ°°Ú½À´Ï±î?");
-		System.out.println("1.¢Ø   2.¡è  3.¢Ö");
-		System.out.println("4.¡ç 5.¡á  6.¡æ");
-		System.out.println("7.¢×   8.¡é  9.¢Ù");
+		System.out.println(user.getUserName() + "å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™ å ì‹±ë“¸ì˜™ å ì™ì˜™í‚¤å ìŒ˜ì™ì˜™å ì‹¹ê¹ì˜™?");
+		System.out.println("1.å ì™ì˜™   2.å ì™ì˜™  3.å ì™ì˜™");
+		System.out.println("4.å ì™ì˜™ 5.å ì™ì˜™  6.å ì™ì˜™");
+		System.out.println("7.å ì™ì˜™   8.å ì™ì˜™  9.å ì™ì˜™");
 
 		return sc.nextInt();
 	}
 
-	// À¯ÀúÁ¤º¸ ¶ç¿ì±â
+	// å ì™ì˜™å ì™ì˜™å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™
 	public void showUsers() {
 		System.out.println("===================");
 		for (User user : userList) {
@@ -143,22 +141,22 @@ public class Game {
 		System.out.println("===================");
 	}
 
-	// ÀÎ°£ ÁÖº¯¿¡µµ ÀûÀÌ ÀÖ´ÂÁö¸¦ »ìÇÇ±â À§ÇØ °ø°İ°¡´É¹üÀ§¿¡ ÀûÀÌ ÀÖ´ÂÁö Å½»öÀ¸·Î º¯°æ (8¹æÀ§)
+	// å ì‹¸ê³¤ì˜™ å ìŒë¸ì˜™å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™ å ìŒëŒì˜™å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì‹¤ê¹ì˜™ å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ìŒ¥ê³¤ì˜™å ì‹¬ë±„ì˜™å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™ å ìŒëŒì˜™å ì™ì˜™ íƒå ì™ì˜™å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™ (8å ì™ì˜™å ì™ì˜™)
 	public void isNearEnemy() {
-		// ±âº» ¾ÆÀÌµğ¾î
-		// »ç¿ëÀÚº°·Î Ã³À½ »ç¿ëÀÚºÎÅÍ °¡Á®¿Í¼­ °Ë»öÇÑ´Ù.
-		// yÃàÀ¸·Î ºñ±³ÇßÀ» °æ¿ì y°¡ °°À¸¸é °è¼Ó Å½»öÇÑ´Ù.
-		// otherY - d <= y <- otherY +1 ÀÌ¶ó¸é °è¼Ó Å½»öÇÑ´Ù.
-		// yÃàÀÌ 1 ÃÊ°ú·Î Â÷ÀÌ°¡ ³­´Ù¸é Å½»öÀ» ¸ØÃá´Ù.
+		// å ì©ë³¸ å ì™ì˜™å ì‹±ë“¸ì˜™å ï¿½
+		// å ì™ì˜™å ì™ì˜™è¬å ì™ì˜™å ï¿½ ì²˜å ì™ì˜™ å ì™ì˜™å ì™ì˜™è¬å ì™ì˜™å ï¿½ å ì™ì˜™å ì™ì˜™å ì‹¶ì‡½ì˜™ å ì‹¯ì‚¼ì˜™å ì‹¼ëŒì˜™.
+		// yå ì™ì˜™å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ï¿½ yå ì™ì˜™ å ì™ì˜™å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ï¿½ íƒå ì™ì˜™å ì‹¼ëŒì˜™.
+		// otherY - d <= y <- otherY +1 å ì‹±ë°ì˜™å ï¿½ å ì™ì˜™å ï¿½ íƒå ì™ì˜™å ì‹¼ëŒì˜™.
+		// yå ì™ì˜™å ì™ì˜™ 1 å ì‹­ê³¤ì˜™å ì™ì˜™ å ì™ì˜™å ì‹±ê³¤ì˜™ å ì™ì˜™å ìŒ•ëªŒì˜™ íƒå ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™å ï¿½.
 		
 		for (User user : userList) {
-			// nearEnemy ÃÊ±âÈ­
+			// nearEnemy å ì‹­ê¹ì˜™í™”
 			user.resetNearEnemy();
-			// Á×Àº »ç¿ëÀÚ´Â Á¦¿Ü
+			// å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™æ¸¼å ï¿½ å ì™ì˜™å ì™ì˜™
 			if (user.isDead())
 				continue;
 			for (User other : userList) {
-				// Á×Àº »ç¿ëÀÚ, ºñ±³ ´ë»óÀÌ ÀÚ½ÅÀÏ °æ¿ì ³Ñ±è
+				// å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™å ï¿½, å ì™ì˜™ å ì™ì˜™å ì™ì˜™å ï¿½ å ìŒ˜ì™ì˜™å ì™ì˜™ å ì™ì˜™å ï¿½ å ì‹¼ê¹ì˜™
 				if (other.isDead() || user == other)
 					continue;
 
@@ -166,13 +164,13 @@ public class Game {
 				if (diff_y >= -possibleAttackRange && diff_y <= possibleAttackRange) {
 					int diff_x = other.getUserLocation().getLocation_x() - user.getUserLocation().getLocation_x();
 					if (diff_x >= -possibleAttackRange && diff_x <= possibleAttackRange)
-						// Áßº¹µÇ´Â °ø°İÀ» ¸·±â À§ÇØ¼­ user°¡ Á»ºñÀÎ°¡¸¦ ±âÁØÀ¸·Î¸¸ attackÀ» È£ÃâÇÑ´Ù.
-						// Áßº¹µÇ´Â °æ¿ì°¡ ÀÖ´ÂÁö ´Ù½Ã »ı°¢ÇØºÁ¾ß°ÚÀ½
+						// å ìŒ©ë¸ì˜™å ì‹¤ëŒì˜™ å ì™ì˜™å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ìŒ”ì‡½ì˜™ userå ì™ì˜™ å ì™ì˜™å ì™ì˜™å ì‹¸ê³¤ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™å ì™ì˜™å ì‹¸ëªŒì˜™ attackå ì™ì˜™ í˜¸å ì™ì˜™å ì‹¼ëŒì˜™.
+						// å ìŒ©ë¸ì˜™å ì‹¤ëŒì˜™ å ì™ì˜™ï§¡ï¿½ å ìŒëŒì˜™å ì™ì˜™ å ìŒ•ì™ì˜™ å ì™ì˜™å ì™ì˜™å ìŒ”ë¸ì˜™å ìŒ©ê³¤ì˜™å ì™ì˜™
 						if (user.isJombie() ^ other.isJombie()){
-							// °ø°İ °¡´ÉÇÑ À¯Àú¸¦ attackableUser¿¡ Áı¾î³ÖÀ½
+							// å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™å ì™ì˜™ attackableUserå ì™ì˜™ å ì™ì˜™å ì™ì˜™å ì™ì˜™å ï¿½
 							user.addNearEnemy(other);
-							// user°¡ Á»ºñÀÏ °æ¿ì´Â ¹Ù·Î °ø°İ
-							// ÁÖº¯¿¡ ÇÑ ¸í¸¸ °ø°İÇÏµµ·Ï º¯°æÇØ¾ß ÇÒ °Í °°À½.
+							// userå ì™ì˜™ å ì™ì˜™å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™ å ìŒ•ë¤„ì˜™ å ì™ì˜™å ì™ì˜™
+							// å ìŒë¸ì˜™å ì™ì˜™ å ì™ì˜™ å ì™ì˜™ å ì™ì˜™å ì™ì˜™å ì‹¹ë“¸ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™å ìŒ”ì–µì˜™ å ì™ì˜™ å ì™ì˜™ å ì™ì˜™å ì™ì˜™.
 							if(user.isJombie())
 								attack(user, other);
 						}
@@ -181,18 +179,18 @@ public class Game {
 		}
 	}
 	
-	// UserControl, MapControl µû·Î ¸¸µé¾î¾ß ÇÒ °Í °°À½
+	// UserControl, MapControl å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™å ì™ì˜™ å ì™ì˜™ å ì™ì˜™ å ì™ì˜™å ì™ì˜™
 	private void attack(User user1, User user2) {
-		// »ç¶óÁú ³ğÀ» ¿©±â¼­ °áÁ¤ÇÒ±î?
-		// hp¸¦ ÆÄ¾ÇÇØ¼­ 0 ÀÌÇÏÀÏ °æ¿ì Á×ÀÎ´Ù.
+		// å ì™ì˜™å ì™ì˜™å ï¿½ å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì©ì„œ å ì™ì˜™å ì™ì˜™å ìŒ€ê¹ì˜™?
+		// hpå ì™ì˜™ å ì‹ì–µì˜™å ìŒ”ì‡½ì˜™ 0 å ì™ì˜™å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ï¿½ å ì™ì˜™å ì‹¸ëŒì˜™.
 
-		// user1ÀÌ Á»ºñÀÌ°í user2°¡ »ç¶÷ÀÏ °æ¿ì
+		// user1å ì™ì˜™ å ì™ì˜™å ì™ì˜™å ì‹±ê³¤ì˜™ user2å ì™ì˜™ å ì™ì˜™å ì™ì˜™å ï¿½ å ì™ì˜™å ï¿½
 		if (user1.isJombie() && !user2.isJombie()) {
 			user2.beAttacked();
 			if (user2.getUserHP() <= 0)
 				user2.setDead(true);
 		}
-		// user1ÀÌ »ç¶÷ÀÌ°í user2°¡ Á»ºñÀÎ °æ¿ì
+		// user1å ì™ì˜™ å ì™ì˜™å ì™ì˜™éš”å ï¿½ user2å ì™ì˜™ å ì™ì˜™å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ï¿½
 		else if (!user1.isJombie() && user2.isJombie()) {
 			user1.beAttacked();
 			if (user1.getUserHP() <= 0)
@@ -205,23 +203,23 @@ public class Game {
 		if (isJombie = (Math.random() > 0.5) ? (jombieCount < maxJombie ? true : false) : false) {
 			jombieCount++;
 		} else {
-			personCount++;
+//			personCount++;
 		}
 		return isJombie;
 	}
-/*	ÀÏ´Ü ³öµÒ
+/*	å ì‹¹ëŒì˜™ å ì™ì˜™å ì™ì˜™
 	 public void moveRandom() {
 	 for (User user : userList) {
 	 user.setUserLocation(userList, (int) (Math.random() * 4));
 	 }
-	 Collections.sort(userList, new CustomComparator()); // °ø°İ È£Ãâ ¾ÈÇÏ°í ÀÖ¾ú´Ù.
+	 Collections.sort(userList, new CustomComparator()); // å ì™ì˜™å ì™ì˜™ í˜¸å ì™ì˜™ å ì™ì˜™å ì‹¹ê³¤ì˜™ å ìŒì–µì˜™å ì™ì˜™.
 	 // isAttakable_8D();
 	 map.drawMap(userList);
 	 showUsers();
 	 }
 */
 	public void moveRandom_ExceptMe() {
-		// ·Î±×ÀÎ À¯Àú(ÁÖÀÎ°ø) Á¦¿ÜÇÏ°í ¸ğµç À¯Àú ÀÌµ¿
+		// å ì‹¸ê¹ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™(å ì™ì˜™å ì‹¸ê³¤ì˜™) å ì™ì˜™å ì™ì˜™å ì‹¹ê³¤ì˜™ å ì™ì˜™å ï¿½ å ì™ì˜™å ì™ì˜™ å ì‹±ë“¸ì˜™
 		for (User user : userList) {
 			if (user == currentLoginUser)
 				continue;
@@ -241,14 +239,14 @@ public class Game {
 		int x = -1, y = -1;
 
 		while (y < 0 || y >= mapSize_y) {
-			System.out.print("Input user Location Y(0ÀÌ»ó " + (mapSize_y - 1) + "ÀÌÇÏ) : ");
+			System.out.print("Input user Location Y(0å ì‹±ì‚¼ì˜™ " + (mapSize_y - 1) + "å ì™ì˜™å ì™ì˜™) : ");
 			y = sc.nextInt();
 		}
 		while (x < 0 || x >= mapSize_x) {
-			System.out.print("Input user Location X(0ÀÌ»ó " + (mapSize_x - 1) + "ÀÌÇÏ) : ");
+			System.out.print("Input user Location X(0å ì‹±ì‚¼ì˜™ " + (mapSize_x - 1) + "å ì™ì˜™å ì™ì˜™) : ");
 			x = sc.nextInt();
 		}
-		// ´Ù½Ã À§Ä¡Á¤º¸¸¦ ¹°¾î°¡¸é¼­ Áßº¹µÈ À§Ä¡ Ã£Áø ¾ÊÀ½
+		// å ìŒ•ì™ì˜™ å ì™ì˜™ì¹˜å ì™ì˜™å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì˜ê°€å ì½ì„œ å ìŒ©ë¸ì˜™å ì™ì˜™ å ì™ì˜™ì¹˜ ì°¾å ì™ì˜™ å ì™ì˜™å ì™ì˜™
 		for (User user : userList) {
 			boolean isDuplicated = user.getUserLocation().getLocation_y() == y
 					&& user.getUserLocation().getLocation_x() == x;
@@ -276,18 +274,18 @@ public class Game {
 //		showUsers();
 	}
 
-	// item »ı¼º ¸Ş¼Òµå
+	// item å ì™ì˜™å ì™ì˜™ å ìŒ¨ì†Œë“¸ì˜™
 	private int[] makeItem() {
-		// ¸Ê »ó¿¡ ¾î¶»°Ô ¶ç¿ï±î¸¦ °í¹ÎÁß
-		// ¸Ê¿¡ »ç¶÷°ú °ãÄ¥°æ¿ì ¾î¶»°Ô ÇÏÁö?
-		// »ç¶÷À» ±×³É ¶ç¿ö³ö¾ß°ÚÁö?
-		// ¾ğÁ¦ ¾ÆÀÌÅÛÀ» »ı¼ºÇÏ°í ¾ğÁ¦ ¸ÔÁö?
-		// ÀÌµ¿ ÈÄ¿¡ »ı¼ºÇÏ°í ÇöÀç À§Ä¡¿¡¼­ °ãÃÄÁö¸é ¹Ù·Î ¸ÔÀ»±î?
-		// ÀÌµ¿ ÈÄ¿¡ »ı¼º -> ¾ÆÀÌÅÛ°ú À¯Àú À§Ä¡ È®ÀÎ
+		// å ì™ì˜™ å ì™ì˜™ å ì˜ë–»å ì™ì˜™ å ì™ì˜™å ì˜ë¥¼ å ì™ì˜™å ì™ì˜™å ï¿½
+		// å ì‹­ìš¸ì˜™ å ì™ì˜™å ì™ì˜™å ï¿½ å ì™ì˜™ì¹ å ì™ì˜™å ï¿½ å ì˜ë–»å ì™ì˜™ å ì™ì˜™å ì™ì˜™?
+		// å ì™ì˜™å ì™ì˜™å ï¿½ å ìŒ“ë†‚ì˜™ å ì™ì˜™å ì™ì˜™å ì™ì˜™ç…å ì™ì˜™å ï¿½?
+		// å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™å ì‹¹ê³¤ì˜™ å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™?
+		// å ì‹±ë“¸ì˜™ å ì‹ìš¸ì˜™ å ì™ì˜™å ì™ì˜™å ì‹¹ê³¤ì˜™ å ì™ì˜™å ì™ì˜™ å ì™ì˜™ì¹˜å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™å ì™ì˜™å ì™ì˜™ å ìŒ•ë¤„ì˜™ å ì™ì˜™å ì™ì˜™å ì™ì˜™?
+		// å ì‹±ë“¸ì˜™ å ì‹ìš¸ì˜™ å ì™ì˜™å ì™ì˜™ -> å ì™ì˜™å ì™ì˜™å ìŒœê³¤ì˜™ å ì™ì˜™å ì™ì˜™ å ì™ì˜™ì¹˜ í™•å ì™ì˜™
 
 		int[] itemLocation = new int[2];
 
-		// 10%ÀÇ È®·ü·Î ¾ÆÀÌÅÛ »ı¼º
+		// 10%å ì™ì˜™ í™•å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™
 		if (Math.random() > 0.9) {
 			itemLocation[0] = (int) (Math.random() * mapSize_y);
 			itemLocation[1] = (int) (Math.random() * mapSize_x);

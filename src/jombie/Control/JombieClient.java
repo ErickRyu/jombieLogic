@@ -31,7 +31,7 @@ import jombie.Model.Location;
 import jombie.Model.User;
 
 public class JombieClient {
-
+	
 	JTextArea incoming;
 	JTextField outgoing;
 	JPanel incomingDot;
@@ -41,17 +41,17 @@ public class JombieClient {
 	BufferedReader reader;
 	PrintWriter writer;
 	Socket sock;
-	static String name;					// ÇöÀç ·Î±×ÀÎ µÈ À¯Àú name
-	static User currentLoginedUser;		// ÇöÀç ·Î±×ÀÎ µÈ À¯Àú °´Ã¼ ÀúÀå (connect ¼º°ø ÈÄ ÀúÀå)
+	static String name;					// ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ name
+	static User currentLoginedUser;		// ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½ (connect ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 	static String ip;
 	static String port;
 	static Map<String, List<Integer>> map = new HashMap<String, List<Integer>>();
 	static List<User> userList = new ArrayList<>();
 	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		System.out.print("Input name : ");
-		name = sc.next();
-
+//		Scanner sc = new Scanner(System.in);
+//		System.out.print("Input name : ");
+//		name = sc.next();
+		name = "E";
 		// System.out.print("IP : ");
 		// ip = sc.next();
 		// System.out.print("Port : ");
@@ -59,12 +59,8 @@ public class JombieClient {
 		JombieClient client = new JombieClient();
 		client.go();
 	}
-
-	public void go() {
-		// chatPanel = new ChattingPanel();
-		// chatPanel.settingPanel();
+	public void setPanel(){
 		JFrame frame = new JFrame("Ludicrously Simple Chat Client");
-		// size Á¶ÀýÀÌ ¾ÈµÊ.
 		JPanel panel = new JPanel();
 		
 		incoming = new JTextArea(15, 50);
@@ -75,9 +71,11 @@ public class JombieClient {
 		// test for print dot
 		// size change
 		incomingDot = new JPanel();
-		incomingDot.setSize(100, 200);
-		incomingDot.setBackground(new Color(0));
+		incomingDot.setSize(400, 100);
+		incomingDot.setBackground(new Color(255,255,255));
 		incomingDot.setVisible(true);
+		
+		
 		int width = 20;
 		int height = 20;
 		img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -91,20 +89,23 @@ public class JombieClient {
 		panel.add(qScroller);
 		panel.add(outgoing);
 		panel.add(sendButton);
-		
-		panel.add(incomingDot);
-		String ip = "127.0.0.1";
-		String port = "5000";
-
-		setUpNetworking(ip, port);
-
-		Thread readerThread = new Thread(new IncomingReader());
-		readerThread.start();
-
 		frame.getContentPane().add(BorderLayout.CENTER, panel);
-		frame.setSize(400, 500);
+		frame.setSize(650, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
+	}
+
+	public void go() {
+		// chatPanel = new ChattingPanel();
+		// chatPanel.settingPanel();
+		
+		String ip = "127.0.0.1";
+		String port = "5000";
+		setUpNetworking(ip, port);
+		Thread readerThread = new Thread(new IncomingReader());
+		readerThread.start();
+		
+		setPanel();
 		// chatPanel.setVisiblePanel();
 	} // end go()
 
@@ -116,7 +117,6 @@ public class JombieClient {
 			System.out.println("[Error] ip or port is not correct");
 		}
 		try {
-
 			InputStreamReader streamReader = new InputStreamReader(sock.getInputStream());
 			reader = new BufferedReader(streamReader);
 			writer = new PrintWriter(sock.getOutputStream());
@@ -124,8 +124,8 @@ public class JombieClient {
 			// chatPanel.getReaderAndWriter(reader, writer);
 			System.out.println("networking established");
 			
-			// network connection ¼º°ø ÀÌÈÄ user »ý¼º
-			// Á»ºñÀÏ È®·ü 30%
+			// network connection ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ user ï¿½ï¿½ï¿½ï¿½
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ 30%
 			boolean isJombie = ((int)(Math.random()*10) > 7)? true:false;
 			Location initialLocation = new Location(0,0);	// random Location
 			currentLoginedUser = new User(initialLocation,name, isJombie);
@@ -152,37 +152,63 @@ public class JombieClient {
 			outgoing.requestFocus();
 		}
 	} // end class sendButtonListener
-
-//	public void paint(int radius) {
-//		Graphics2D g = img.createGraphics();
-//		g.setColor(Color.orange);
-//		g.fillRect(0, 0, 150, 150);
-//		g.setColor(Color.black);
-//
-//		g.drawOval((150 / 2 - radius), (150 / 2 - radius), radius * 2, radius * 2);
-//	}
-
-//	private void doDrawing(Graphics g) {
-//
-//		Graphics2D g2d = (Graphics2D) g;
-//
-//		g2d.setPaint(Color.blue);
-//
-////		int w = getWidth();
-//		int w = 20;
-//		int h = 20;
-////		int h = getHeight();
-//
-//		Random r = new Random();
-//
-//		for (int i = 0; i < 2000; i++) {
-//
-//			int x = Math.abs(r.nextInt()) % w;
-//			int y = Math.abs(r.nextInt()) % h;
-//			g2d.drawLine(x, y, x, y);
-//		}
-//	}
-
+	
+	
+	public void processCommand(String[] commandAndArguments, String name){
+		String command = commandAndArguments[0];
+		if (command.equals("MOVE")) {
+			int y = Integer.parseInt(commandAndArguments[1]);
+			int x = Integer.parseInt(commandAndArguments[2]);
+			moveUser(y, x, name);
+		} else if(command.equals("STATUS")){
+			//print user status
+			
+		} else if (command.equals("EXIT")) {
+			System.exit(0);
+		}
+	}
+	public void moveUser(int y, int x, String name){
+		map.put(name, new ArrayList<Integer>(Arrays.asList(y, x)));
+		
+		// mapï¿½ï¿½ nameï¿½ï¿½ keyï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ³ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Userï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ä°¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+		Map<Integer, Map<Integer, String>> locations = new HashMap<Integer, Map<Integer, String>>();
+		for (Entry<String, List<Integer>> keyAndValue : map.entrySet()) {
+			name = keyAndValue.getKey();
+			List<Integer> yAndX = keyAndValue.getValue();
+			y = yAndX.get(0);
+			x = yAndX.get(1);
+			Map<Integer, String> rows = locations.get(y);
+			if (rows == null) {
+				rows = new HashMap<Integer, String>();
+				locations.put(y, rows);
+			}
+			rows.put(x, name);
+		}
+		// place to determine isNearEnemy
+		
+		
+		printUsers(locations);
+	}
+	public void printUsers(Map<Integer, Map<Integer, String>> locations){
+		incoming.setTabSize(2);
+		incoming.setText("");
+		for (int i = 0; i < 20; i++) {
+			StringBuffer stringBuffer = new StringBuffer();
+			for (int j = 0; j < 20; j++) {
+				Map<Integer, String> rows = locations.get(i);
+				if (rows != null) {
+					name = rows.get(j);
+					if (name != null) {
+						stringBuffer.append("\t" + name);
+						continue;
+					}
+				}
+				stringBuffer.append("\t.");
+			}
+			incoming.append(stringBuffer.toString());
+			incoming.append("\n");
+		}
+	}
 	public class IncomingReader implements Runnable {
 
 		@Override
@@ -191,75 +217,26 @@ public class JombieClient {
 			try {
 				while ((message = reader.readLine()) != null) {
 
-//					paint(2);
-//					incomingDot.
-
-					// Graphics2D g2d = (Graphics2D)incomingDot;
-					// g2d.drawOval(5, 5, 100, 100);
-
 					// Move order
 					String[] nameAndCommand = message.split(" : ");
 					String name = nameAndCommand[0];
 					String command = nameAndCommand[1];
 					String[] commandAndArguments = command.split(" ");
-						
 					
-					// map Çü½Ä º¯°æ   
-					// name -> user ÀúÀå
+					processCommand(commandAndArguments, name);
+					
+					// map ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½   
+					// name -> user ï¿½ï¿½ï¿½ï¿½
 					// map<int, map<int, string>>
-					// 1. mapÀ¸·Î º¯°æ½ÃÅ³Áö
-					// 2. list¿¡ ÀúÀåÇÒÁö
-					// ÀÏ´Ü list¿¡ ÀúÀå (staticÀ¸·Î ÁöÁ¤)
+					// 1. mapï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Å³ï¿½ï¿½
+					// 2. listï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+					// ï¿½Ï´ï¿½ listï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (staticï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 					
 					
-					//±âÁ¸ Game¿¡¼­ µ¹¾Æ°¡´ø ¸í·ÉµéÀº ¼öµ¿ÀûÀÎ °Í
-					// ÇöÀç ¼öÁ¤µÈ MOVE ¸í·ÉÀº ´Éµ¿ÀûÀÎ °Í
-					// ³ªÁß¿¡ ¼öÁ¤ÇÏ±â°¡ ÆíÇÑ °Í °°À½
-					if (commandAndArguments[0].equals("MOVE")) {
-						int y = Integer.parseInt(commandAndArguments[1]);
-						int x = Integer.parseInt(commandAndArguments[2]);
-						map.put(name, new ArrayList<Integer>(Arrays.asList(y, x)));
-						
-						// map¿¡ nameÀ» key·Î °¡Áöµµ·Ï ÀúÀå½ÃÄÑ³õÀ¸¸é µüÈ÷ User°´Ã¼¸¦ ´ãÀ» ÇÊ¿ä°¡ ¾ø´Â °Í °°Àºµ¥.
-//						List<User> userList = new ArrayList<>();
-						Map<Integer, Map<Integer, String>> locations = new HashMap<Integer, Map<Integer, String>>();
-						for (Entry<String, List<Integer>> keyAndValue : map.entrySet()) {
-							name = keyAndValue.getKey();
-							List<Integer> yAndX = keyAndValue.getValue();
-							y = yAndX.get(0);
-							x = yAndX.get(1);
-							Map<Integer, String> rows = locations.get(y);
-							if (rows == null) {
-								rows = new HashMap<Integer, String>();
-								locations.put(y, rows);
-							}
-							rows.put(x, name);
-						}
-
-						incoming.setTabSize(2);
-						incoming.setText("");
-						// for(User user : userList) Å½»öÇÏ¸é¼­ setMarker ÂïÀ¸·Á°í Çß´Âµ¥
-						// µüÈ÷ ¼øÂ÷ÀûÀÏ ÇÊ¿ä°¡ ¾ø´Â °Í °°À½
-						// isNearEnemyÂÊ, AttackÂÊ¸¸ Á¶±Ý ´õ »ý°¢À» ÇØºÁ¾ß°ÙÀ½.
-						for (int i = 0; i < 20; i++) {
-							StringBuffer stringBuffer = new StringBuffer();
-							for (int j = 0; j < 20; j++) {
-								Map<Integer, String> rows = locations.get(i);
-								if (rows != null) {
-									name = rows.get(j);
-									if (name != null) {
-										stringBuffer.append("\t" + name);
-										continue;
-									}
-								}
-
-								stringBuffer.append("\t.");
-							}
-							incoming.append(stringBuffer.toString());
-							incoming.append("\n");
-						}
-					} else if (commandAndArguments[0].equals("EXIT")) {
-					}
+					//ï¿½ï¿½ï¿½ï¿½ Gameï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Æ°ï¿½ï¿½ï¿½ ï¿½ï¿½Éµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+					// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ MOVE ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Éµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+					// ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±â°¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+					
 				}
 			} catch (Exception ex) {
 				ex.printStackTrace();
