@@ -1,13 +1,14 @@
 package jombie.Model;
 
 import java.util.ArrayList;
-
+// discret Location from User class 
 public class User implements Comparable<User> {
 	private Location location;
 	private int hp;
 	private String userName;
 	private boolean isJombie;
 	private boolean isDead;
+	private final float possiblityToBeJombie = 0.5f;
 	private static final int basicDamage = 20;
 	
 	// attackableUser List를 nearEnemy로 변경
@@ -37,11 +38,19 @@ public class User implements Comparable<User> {
 		this.location = location;
 		this.userName = userName;
 		this.hp = 100;
-		this.isJombie = (Math.random() > 0.5) ? true : false;
+		this.isJombie = (Math.random() < possiblityToBeJombie) ? true : false;
 		this.isDead = false;
 		this.nearEnemy = new ArrayList<>(); 
 	}
-
+	
+	// discret Version of User class 
+	public User(String userName){
+		this.userName = userName;
+		this.hp = 100;
+		this.isJombie = (Math.random() < possiblityToBeJombie) ? true : false;
+		this.isDead = false;
+		this.nearEnemy = new ArrayList<>();
+	}
 	public User(Location location, String userName, boolean isJombie) {
 		this.location = location;
 		this.userName = userName;
@@ -62,10 +71,6 @@ public class User implements Comparable<User> {
 	public Location getUserLocation() {
 		return location;
 	}
-
-//	public boolean setUserLocation(ArrayList<User> userList, int direction) {
-//		return this.location.moveDirect(userList, direction);
-//	}
 
 	public boolean setUserLocation_8D(ArrayList<User> userList, int direction) {
 		return this.location.moveDirect_8D(this, userList, direction);

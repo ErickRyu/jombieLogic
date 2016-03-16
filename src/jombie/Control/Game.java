@@ -13,15 +13,14 @@ public class Game {
 	static public final int mapSize_y = 20;
 	static public final int mapSize_x = 20;
 	private ArrayList<User> userList = null;
-	// 
+	//
 	private final int possibleAttackRange = 2;
 
 	private int maxJombie = 2;
 	private int jombieCount;
 
 	String nameDic[] = { "Erick", "John", "Clock", "Cook", "Norm", "Von", "Harris", "Fransis" };
-	
-	
+
 	private User currentLoginUser;
 
 	private Map map = null;
@@ -32,7 +31,7 @@ public class Game {
 		map = new Map(mapSize_y, mapSize_x);
 		sc = new Scanner(System.in);
 		jombieCount = 0;
-//		personCount = 0;
+		// personCount = 0;
 	}
 
 	public Game(ArrayList<User> userList, Map map) {
@@ -40,13 +39,13 @@ public class Game {
 		this.map = map;
 		sc = new Scanner(System.in);
 		jombieCount = 0;
-//		personCount = 0;
-//		joinedUser = 0;
+		// personCount = 0;
+		// joinedUser = 0;
 	}
 
 	public void playSingleGame(int maxUser) {
 		showLogin();
-		makeOtherUsers(maxUser-1);
+		makeOtherUsers(maxUser - 1);
 		askMe();
 	}
 
@@ -54,7 +53,7 @@ public class Game {
 		int res;
 		while (true) {
 			System.out.println("**********");
-			System.out.println("1.占쏙옙 占쏙옙占쏙옙 \n2.占쏙옙치占싱듸옙\n3.占쏙옙占쏙옙占쏙옙占쏙옙\n4.占십븝옙占쏙옙(치트占쏙옙占�)\n5.占쏙옙占쏙옙");
+			System.out.println("1.맵 보기 \n2.위치이동\n3.유저정보\n4.맵보기(치트모드)\n5.종료");
 			System.out.println("**********");
 			res = sc.nextInt();
 			switch (res) {
@@ -71,10 +70,10 @@ public class Game {
 				map.drawMap(userList);
 				break;
 			case 5:
-				System.out.println("占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙絳求占�.");
+				System.out.println("게임이 종료됩니다.");
 				return;
 			default:
-				System.out.println("占쌩몌옙 占쌉뤄옙占싹셨쏙옙占싹댐옙.\nUser choice : " + res);
+				System.out.println("잘못 입력하셨습니다.\nUser choice : " + res);
 				break;
 			}
 		}
@@ -108,10 +107,10 @@ public class Game {
 	}
 
 	private int askDirection(User user) {
-		System.out.println(user.getUserName() + "占쏙옙占쏙옙 占쏙옙占쏙옙 占싱듸옙 占쏙옙키占쌘쏙옙占싹깍옙?");
-		System.out.println("1.占쏙옙   2.占쏙옙  3.占쏙옙");
-		System.out.println("4.占쏙옙 5.占쏙옙  6.占쏙옙");
-		System.out.println("7.占쏙옙   8.占쏙옙  9.占쏙옙");
+		System.out.println(user.getUserName() + "님을 어디로 이동 시키겠습니까?");
+		System.out.println("1.↖   2.↑  3.↗");
+		System.out.println("4.← 5.■  6.→");
+		System.out.println("7.↙   8.↓  9.↘");
 
 		return sc.nextInt();
 	}
@@ -137,23 +136,22 @@ public class Game {
 				if (diff_y >= -possibleAttackRange && diff_y <= possibleAttackRange) {
 					int diff_x = other.getUserLocation().getLocation_x() - user.getUserLocation().getLocation_x();
 					if (diff_x >= -possibleAttackRange && diff_x <= possibleAttackRange)
-						if (user.isJombie() ^ other.isJombie()){
+						if (user.isJombie() ^ other.isJombie()) {
 							user.addNearEnemy(other);
-							if(user.isJombie())
+							if (user.isJombie())
 								attack(user, other);
 						}
 				}
 			}
 		}
 	}
-	
+
 	private void attack(User user1, User user2) {
 		if (user1.isJombie() && !user2.isJombie()) {
 			user2.beAttacked();
 			if (user2.getUserHP() <= 0)
 				user2.setDead(true);
-		}
-		else if (!user1.isJombie() && user2.isJombie()) {
+		} else if (!user1.isJombie() && user2.isJombie()) {
 			user1.beAttacked();
 			if (user1.getUserHP() <= 0)
 				user1.setDead(true);
@@ -165,10 +163,11 @@ public class Game {
 		if (isJombie = (Math.random() > 0.5) ? (jombieCount < maxJombie ? true : false) : false) {
 			jombieCount++;
 		} else {
-//			personCount++;
+			// personCount++;
 		}
 		return isJombie;
 	}
+
 	public void moveRandom_ExceptMe() {
 		for (User user : userList) {
 			if (user == currentLoginUser)
@@ -181,17 +180,17 @@ public class Game {
 		isNearEnemy();
 	}
 
-	public void showLogin(){
+	public void showLogin() {
 		System.out.print("Input user Nmae : ");
 		String userName = sc.next();
 		int x = -1, y = -1;
 
 		while (y < 0 || y >= mapSize_y) {
-			System.out.print("Input user Location Y(0占싱삼옙 " + (mapSize_y - 1) + "占쏙옙占쏙옙) : ");
+			System.out.print("Input user Location Y(0이상 " + (mapSize_y - 1) + "이하) : ");
 			y = sc.nextInt();
 		}
 		while (x < 0 || x >= mapSize_x) {
-			System.out.print("Input user Location X(0占싱삼옙 " + (mapSize_x - 1) + "占쏙옙占쏙옙) : ");
+			System.out.print("Input user Location X(0이상 " + (mapSize_x - 1) + "이하) : ");
 			x = sc.nextInt();
 		}
 		for (User user : userList) {
@@ -204,9 +203,10 @@ public class Game {
 
 		User user = new User(loc, userName, makeJombie());
 		userList.add(user);
-		
+
 		logIn(user);
 	}
+
 	public void logIn(User loginUser) {
 		currentLoginUser = loginUser;
 	}
@@ -218,7 +218,6 @@ public class Game {
 			}
 		}
 	}
-
 
 	public class CustomComparator implements Comparator<User> {
 		@Override

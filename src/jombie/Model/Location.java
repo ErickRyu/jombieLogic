@@ -28,21 +28,6 @@ public class Location {
 
 	}
 
-//	public boolean moveDirect(ArrayList<User> userList, int move) {
-//		int next_y = location_y + direction_y[move];
-//		int next_x = location_x + direction_x[move];
-//		// userList를 다 탐색하는게 좋을지
-//		// 나중에 map이 몇십만이상으로 커질 경우 배열은 부적절하지 않을까 생각
-//		// user는 일단 10명정도로 예상하고 있으므로 유저를 모두 탐색하는게 메모리나 속도 전체에서 가장 효율적이지 않을까 생각
-//		
-//		if (canGo(next_y, next_x) && !isDuplicated(user, userList, next_y, next_x)) {
-//			location_y = next_y;
-//			location_x = next_x;
-//			return true;
-//		}
-//		return false;
-//	}
-	
 	public boolean moveDirect_8D(User user, ArrayList<User> userList, int move) {
 		int next_y = location_y + direction_8D_y[move];
 		int next_x = location_x + direction_8D_x[move];
@@ -54,7 +39,6 @@ public class Location {
 		}
 		return false;
 	}
-	
 	
 	// 이동 가능한 범위인지 체크
 	public boolean canGo(int y, int x) {

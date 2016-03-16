@@ -1,4 +1,4 @@
-package jombie.server;
+package jombie.Server;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -41,12 +41,19 @@ public class Client {
 	BufferedReader reader;
 	PrintWriter writer;
 	Socket sock;
-	static String name;					// ���� �α��� �� ���� name
-	static User currentLoginedUser;		// ���� �α��� �� ���� ��ü ���� (connect ���� �� ����)
-	static String ip;
-	static String port;
-	static Map<String, List<Integer>> map = new HashMap<String, List<Integer>>();
-	static List<User> userList = new ArrayList<>();
+	
+	
+	private static String name;					
+	private static User loginUser;		
+	private static String ip;
+	private static String port;
+	
+	private static Map<String, List<Integer>> map = new HashMap<String, List<Integer>>();
+	private static Map<User, Location> _userMap = new HashMap<User, Location>();
+	
+	private static List<User> userList = new ArrayList<>();
+	
+	
 	public static void main(String[] args) {
 //		Scanner sc = new Scanner(System.in);
 //		System.out.print("Input name : ");
@@ -67,15 +74,7 @@ public class Client {
 		incoming.setLineWrap(true);
 		incoming.setWrapStyleWord(true);
 		incoming.setEditable(false);
-
-		// test for print dot
-		// size change
-		incomingDot = new JPanel();
-		incomingDot.setSize(400, 100);
-		incomingDot.setBackground(new Color(255,255,255));
-		incomingDot.setVisible(true);
-		
-		
+		incoming.setTabSize(2);
 		int width = 20;
 		int height = 20;
 		img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -101,14 +100,24 @@ public class Client {
 		
 		String ip = "127.0.0.1";
 		String port = "5000";
+		
 		setUpNetworking(ip, port);
 		Thread readerThread = new Thread(new IncomingReader());
 		readerThread.start();
 		
+		logIn();
+		// after success to setUpNetwork and login, show Panel
 		setPanel();
-		// chatPanel.setVisiblePanel();
+		
 	} // end go()
-
+	
+	public void logIn(){
+		int y = (int)(Math.random() * 20);
+		int x = (int)(Math.random() * 20);
+		Location initialLocation = new Location(y, x);	// random Location
+		loginUser = new User(initialLocation,name);
+	}
+	
 	public void setUpNetworking(String ip, String port) {
 		try {
 			sock = new Socket(ip, Integer.parseInt(port));
@@ -125,15 +134,9 @@ public class Client {
 			System.out.println("networking established");
 			
 			// network connection ���� ���� user ����
-			// ������ Ȯ�� 30%
-			boolean isJombie = ((int)(Math.random()*10) > 7)? true:false;
-			Location initialLocation = new Location(0,0);	// random Location
-			currentLoginedUser = new User(initialLocation,name, isJombie);
-			
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		} // end try
-
 	} // end setUpNetworking()
 
 	public class SendButtonListener implements ActionListener {
@@ -169,8 +172,28 @@ public class Client {
 	}
 	public void moveUser(int y, int x){
 		map.put(name, new ArrayList<Integer>(Arrays.asList(y, x)));
+		_userMap.put(new User(name), new Location(y, x));
+		String name = "";
+		Map<Integer, Map<Integer, User>> toPrintUsers = new HashMap<Integer, Map<Integer, User>>();
 		
-		// map�� name�� key�� �������� ������ѳ����� ���� User��ü�� ���� �ʿ䰡 ���� �� ������.
+		
+		for (Entry<User, Location> userAndLocation : _userMap.entrySet()){
+			User user = userAndLocation.getKey();
+			Location location = userAndLocation.getValue();
+			int locY = location.getLocation_y();
+			int locX = location.getLocation_x();
+			Map<Integer, User> rows = toPrintUsers.get(y);
+			if(rows == null){
+				rows = new HashMap<Integer, User>();
+				toPrintUsers.put(locY, rows);
+			}
+			rows.put(locX, user);
+			System.out.println("[Info] made user : " + toPrintUsers.get(y).get(x).getUserName());
+		}
+		
+		
+		// map�� name�� key�� �������� ������ѳ�����? ���� User��ü�� ���� �ʿ䰡 ���� �� ������.
+		// find git hub above, change that
 		Map<Integer, Map<Integer, String>> locations = new HashMap<Integer, Map<Integer, String>>();
 		for (Entry<String, List<Integer>> keyAndValue : map.entrySet()) {
 			name = keyAndValue.getKey();
@@ -187,10 +210,11 @@ public class Client {
 		// place to determine isNearEnemy
 		
 		
-		printUsers(locations);
+//		printU sers(locations);
+		printUsers2(toPrintUsers);
 	}
 	public void printUsers(Map<Integer, Map<Integer, String>> locations){
-		incoming.setTabSize(2);
+		
 		incoming.setText("");
 		for (int i = 0; i < 20; i++) {
 			StringBuffer stringBuffer = new StringBuffer();
@@ -198,6 +222,29 @@ public class Client {
 				Map<Integer, String> rows = locations.get(i);
 				if (rows != null) {
 					name = rows.get(j);
+					if (name != null) {
+						stringBuffer.append("\t" + name);
+						continue;
+					}
+				}
+				stringBuffer.append("\t.");
+			}
+			incoming.append(stringBuffer.toString());
+			incoming.append("\n");
+		}
+	}
+	
+	public void printUsers2(Map<Integer, Map<Integer, User>> locations){
+		incoming.setTabSize(2);
+		incoming.setText("");
+		String name = "";
+		for (int i = 0; i < 20; i++) {
+			StringBuffer stringBuffer = new StringBuffer();
+			for (int j = 0; j < 20; j++) {
+				// nullPointerException occured....
+				Map<Integer, User> rows = locations.get(i);
+				if (rows != null) {
+					name = rows.get(j).getUserName();
 					if (name != null) {
 						stringBuffer.append("\t" + name);
 						continue;
@@ -228,13 +275,13 @@ public class Client {
 					// map ���� ����   
 					// name -> user ����
 					// map<int, map<int, string>>
-					// 1. map���� �����ų��
+					// 1. map���� �����ų��?
 					// 2. list�� ��������
 					// �ϴ� list�� ���� (static���� ����)
 					
 					
-					//���� Game���� ���ư��� ��ɵ��� �������� ��
-					// ���� ������ MOVE ����� �ɵ����� ��
+					//���� Game���� ���ư��� ��?���� �������� ��
+					// ���� ������ MOVE �����? �ɵ����� ��
 					// ���߿� �����ϱⰡ ���� �� ����
 					
 				}
