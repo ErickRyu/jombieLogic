@@ -1,4 +1,4 @@
-package jombie.Control;
+package jombie.server;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -30,7 +30,7 @@ import javax.swing.ScrollPaneConstants;
 import jombie.Model.Location;
 import jombie.Model.User;
 
-public class JombieClient {
+public class Client {
 	
 	JTextArea incoming;
 	JTextField outgoing;
@@ -56,7 +56,7 @@ public class JombieClient {
 		// ip = sc.next();
 		// System.out.print("Port : ");
 		// port = sc.next();
-		JombieClient client = new JombieClient();
+		Client client = new Client();
 		client.go();
 	}
 	public void setPanel(){
@@ -154,12 +154,12 @@ public class JombieClient {
 	} // end class sendButtonListener
 	
 	
-	public void processCommand(String[] commandAndArguments, String name){
+	public void processCommand(String[] commandAndArguments){
 		String command = commandAndArguments[0];
 		if (command.equals("MOVE")) {
 			int y = Integer.parseInt(commandAndArguments[1]);
 			int x = Integer.parseInt(commandAndArguments[2]);
-			moveUser(y, x, name);
+			moveUser(y, x);
 		} else if(command.equals("STATUS")){
 			//print user status
 			
@@ -167,7 +167,7 @@ public class JombieClient {
 			System.exit(0);
 		}
 	}
-	public void moveUser(int y, int x, String name){
+	public void moveUser(int y, int x){
 		map.put(name, new ArrayList<Integer>(Arrays.asList(y, x)));
 		
 		// map�� name�� key�� �������� ������ѳ����� ���� User��ü�� ���� �ʿ䰡 ���� �� ������.
@@ -223,7 +223,7 @@ public class JombieClient {
 					String command = nameAndCommand[1];
 					String[] commandAndArguments = command.split(" ");
 					
-					processCommand(commandAndArguments, name);
+					processCommand(commandAndArguments);
 					
 					// map ���� ����   
 					// name -> user ����
