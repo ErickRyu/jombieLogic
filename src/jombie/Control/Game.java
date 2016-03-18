@@ -10,10 +10,9 @@ import jombie.Model.User;
 import jombie.View.Map;
 
 public class Game {
-	static public final int mapSize_y = 20;
-	static public final int mapSize_x = 20;
-	private ArrayList<User> userList = null;
-	//
+	public static final int mapSize_y = 20;
+	public static final int mapSize_x = 20;
+	private ArrayList<User> userList;
 	private final int possibleAttackRange = 2;
 
 	private int maxJombie = 2;
@@ -23,7 +22,7 @@ public class Game {
 
 	private User currentLoginUser;
 
-	private Map map = null;
+	private Map map;
 	private Scanner sc;
 
 	public Game() {
@@ -80,13 +79,15 @@ public class Game {
 	}
 
 	public boolean makeNewUser(String name, int y, int x) {
-		if (y < 0 || y >= mapSize_y || x < 0 || x >= mapSize_x)
+		if (y < 0 || y >= mapSize_y || x < 0 || x >= mapSize_x) {
 			return false;
+		}
 		for (User user : userList) {
-			boolean isDuplicated = user.getUserLocation().getLocation_y() == y
-					&& user.getUserLocation().getLocation_x() == x;
-			if (isDuplicated)
+			boolean isDuplicated = user.getUserLocation().getLocationY() == y
+					&& user.getUserLocation().getLocationX() == x;
+			if (isDuplicated) {
 				return false;
+			}
 		}
 		User user = new User(new Location(y, x), name, makeJombie());
 		userList.add(user);
@@ -99,10 +100,11 @@ public class Game {
 		int direction = -1;
 		while (direction < 1 || direction > 9) {
 			direction = askDirection(currentLoginUser);
-			if (currentLoginUser.setUserLocation_8D(userList, direction - 1))
+			if (currentLoginUser.setUserLocation_8D(userList, direction - 1)) {
 				break;
-			else
+			} else {
 				direction = -1;
+			}
 		}
 	}
 
@@ -126,21 +128,23 @@ public class Game {
 	public void isNearEnemy() {
 		for (User user : userList) {
 			user.resetNearEnemy();
-			if (user.isDead())
+			if (user.isDead()) {
 				continue;
+			}
 			for (User other : userList) {
-				if (other.isDead() || user == other)
+				if (other.isDead() || user == other) {
 					continue;
+				}
 
-				int diff_y = other.getUserLocation().getLocation_y() - user.getUserLocation().getLocation_y();
+				int diff_y = other.getUserLocation().getLocationY() - user.getUserLocation().getLocationY();
 				if (diff_y >= -possibleAttackRange && diff_y <= possibleAttackRange) {
-					int diff_x = other.getUserLocation().getLocation_x() - user.getUserLocation().getLocation_x();
-					if (diff_x >= -possibleAttackRange && diff_x <= possibleAttackRange)
-						if (user.isJombie() ^ other.isJombie()) {
-							user.addNearEnemy(other);
-							if (user.isJombie())
-								attack(user, other);
+					int diff_x = other.getUserLocation().getLocationX() - user.getUserLocation().getLocationX();
+					if (diff_x >= -possibleAttackRange && diff_x <= possibleAttackRange && user.isJombie() ^ other.isJombie()) {
+						user.addNearEnemy(other);
+						if (user.isJombie()) {
+							attack(user, other);
 						}
+					}
 				}
 			}
 		}
@@ -149,29 +153,30 @@ public class Game {
 	private void attack(User user1, User user2) {
 		if (user1.isJombie() && !user2.isJombie()) {
 			user2.beAttacked();
-			if (user2.getUserHP() <= 0)
+			if (user2.getUserHP() <= 0) {
 				user2.setDead(true);
+			}
 		} else if (!user1.isJombie() && user2.isJombie()) {
 			user1.beAttacked();
-			if (user1.getUserHP() <= 0)
+			if (user1.getUserHP() <= 0) {
 				user1.setDead(true);
+			}
 		}
 	}
 
 	private boolean makeJombie() {
 		boolean isJombie = false;
-		if (isJombie = (Math.random() > 0.5) ? (jombieCount < maxJombie ? true : false) : false) {
+		if (isJombie = (Math.random() > 0.5) ? (jombieCount < maxJombie) : false) {
 			jombieCount++;
-		} else {
-			// personCount++;
 		}
 		return isJombie;
 	}
 
 	public void moveRandom_ExceptMe() {
 		for (User user : userList) {
-			if (user == currentLoginUser)
+			if (user == currentLoginUser) {
 				continue;
+			}
 			user.setUserLocation_8D(userList, (int) (Math.random() * 9));
 		}
 		moveUser();
@@ -194,10 +199,11 @@ public class Game {
 			x = sc.nextInt();
 		}
 		for (User user : userList) {
-			boolean isDuplicated = user.getUserLocation().getLocation_y() == y
-					&& user.getUserLocation().getLocation_x() == x;
-			if (isDuplicated)
+			boolean isDuplicated = user.getUserLocation().getLocationY() == y
+					&& user.getUserLocation().getLocationX() == x;
+			if (isDuplicated) {
 				return;
+			}
 		}
 		Location loc = new Location(y, x);
 

@@ -36,7 +36,7 @@ public class Client {
 	JTextField outgoing;
 	JPanel incomingDot;
 	BufferedImage img;
-	// ChattingPanel chatPanel;
+	/** ChattingPanel chatPanel;. */
 
 	BufferedReader reader;
 	PrintWriter writer;
@@ -109,7 +109,7 @@ public class Client {
 		// after success to setUpNetwork and login, show Panel
 		setPanel();
 		
-	} // end go()
+	} /** End go(). */
 	
 	public void logIn(){
 		int y = (int)(Math.random() * 20);
@@ -137,7 +137,7 @@ public class Client {
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		} // end try
-	} // end setUpNetworking()
+	} /** End setUpNetworking(). */
 
 	public class SendButtonListener implements ActionListener {
 		@Override
@@ -154,19 +154,19 @@ public class Client {
 			outgoing.setText("");
 			outgoing.requestFocus();
 		}
-	} // end class sendButtonListener
+	} /** End class sendButtonListener. */
 	
 	
 	public void processCommand(String[] commandAndArguments){
 		String command = commandAndArguments[0];
-		if (command.equals("MOVE")) {
+		if ("MOVE".equals(command)) {
 			int y = Integer.parseInt(commandAndArguments[1]);
 			int x = Integer.parseInt(commandAndArguments[2]);
 			moveUser(y, x);
-		} else if(command.equals("STATUS")){
+		} else if("STATUS".equals(command)){
 			//print user status
 			
-		} else if (command.equals("EXIT")) {
+		} else if ("EXIT".equals(command)) {
 			System.exit(0);
 		}
 	}
@@ -180,8 +180,8 @@ public class Client {
 		for (Entry<User, Location> userAndLocation : _userMap.entrySet()){
 			User user = userAndLocation.getKey();
 			Location location = userAndLocation.getValue();
-			int locY = location.getLocation_y();
-			int locX = location.getLocation_x();
+			int locY = location.getLocationY();
+			int locX = location.getLocationX();
 			Map<Integer, User> rows = toPrintUsers.get(y);
 			if(rows == null){
 				rows = new HashMap<Integer, User>();
@@ -223,7 +223,7 @@ public class Client {
 				if (rows != null) {
 					name = rows.get(j);
 					if (name != null) {
-						stringBuffer.append("\t" + name);
+						stringBuffer.append("\t").append(name);
 						continue;
 					}
 				}
@@ -241,12 +241,12 @@ public class Client {
 		for (int i = 0; i < 20; i++) {
 			StringBuffer stringBuffer = new StringBuffer();
 			for (int j = 0; j < 20; j++) {
-				// nullPointerException occured....
+				// nullPointerException occured...
 				Map<Integer, User> rows = locations.get(i);
 				if (rows != null) {
 					name = rows.get(j).getUserName();
 					if (name != null) {
-						stringBuffer.append("\t" + name);
+						stringBuffer.append("\t").append(name);
 						continue;
 					}
 				}

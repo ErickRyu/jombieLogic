@@ -8,7 +8,7 @@ import java.net.Socket;
 //import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
-//import java.awt.event.*;
+/** Import java.awt.event.*; */
 
 public class Server {
 
@@ -17,7 +17,7 @@ public class Server {
 	public static void main(String[] args) {
 		Server server = new Server();
 		server.go();
-	} // end main()
+	} /** End main(). */
 
 	public void go() {
 		clientOutputStreams = new ArrayList();
@@ -40,7 +40,7 @@ public class Server {
 			ex.printStackTrace();
 		} // end try
 
-	} // end go()
+	} /** End go(). */
 
 	public class ClientHandler implements Runnable {
 
@@ -55,7 +55,7 @@ public class Server {
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			} // end try
-		} // end ClientHandler()
+		} /** End ClientHandler(). */
 
 		@Override
 		public void run() {
@@ -72,7 +72,7 @@ public class Server {
 
 		} // end run()
 
-	} // end class ClientHandler
+	} /** End class ClientHandler. */
 
 	public void tellEveryone(String message) {
 

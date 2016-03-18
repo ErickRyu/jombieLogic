@@ -10,7 +10,7 @@ import jombie.View.Map;
 
 public class GameTest {
 	String nameDic[] = { "Erick", "John", "Clock", "Cook", "Norm", "Von", "Harris", "Fransis" };
-	// mapSize 변수들이 지금 Game쪽이랑 중복되고있음
+	/** MapSize 변수들이 지금 Game쪽이랑 중복되고있음. */
 	private final int mapSize_y = 10;
 	private final int mapSize_x = 10;
 	private ArrayList<User> userList;
@@ -40,7 +40,7 @@ public class GameTest {
 		map.drawMap(userList);
 		game.showUsers();
 	}
-	//Game class와 중복됨
+	/** Game class와 중복됨. */
 	public class CustomComparator implements Comparator<User> {
 		@Override
 		public int compare(User u1, User u2) {
