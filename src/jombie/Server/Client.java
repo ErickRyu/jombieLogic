@@ -31,7 +31,7 @@ import jombie.Model.Location;
 import jombie.Model.User;
 
 public class Client {
-	
+
 	JTextArea incoming;
 	JTextField outgoing;
 	JPanel incomingDot;
@@ -41,35 +41,34 @@ public class Client {
 	BufferedReader reader;
 	PrintWriter writer;
 	Socket sock;
-	
-	
-	private static String name;					
-	private static User loginUser;		
+
+	private static String name;
+	private static User loginUser;
 	private static String ip;
 	private static String port;
-	
+
 	private static Map<String, List<Integer>> map = new HashMap<String, List<Integer>>();
-	private static Map<User, Location> _userMap = new HashMap<User, Location>();
-	
-	private static List<User> userList = new ArrayList<>();
-	
-	
+	private static Map<String, User> _userMap = new HashMap<String, User>();
+
+	/** Map에 name을 key로 가지고 user클래스쪽에서 location정보와 나머지를 모두 읽어들여야겠음. */
+
 	public static void main(String[] args) {
-//		Scanner sc = new Scanner(System.in);
-//		System.out.print("Input name : ");
-//		name = sc.next();
-		name = "E";
+		Scanner sc = new Scanner(System.in);
+		System.out.print("Input name : ");
+		name = sc.next();
 		// System.out.print("IP : ");
 		// ip = sc.next();
 		// System.out.print("Port : ");
 		// port = sc.next();
 		Client client = new Client();
 		client.go();
+		sc.close();
 	}
-	public void setPanel(){
+
+	public void setPanel() {
 		JFrame frame = new JFrame("Ludicrously Simple Chat Client");
 		JPanel panel = new JPanel();
-		
+
 		incoming = new JTextArea(15, 50);
 		incoming.setLineWrap(true);
 		incoming.setWrapStyleWord(true);
@@ -95,49 +94,47 @@ public class Client {
 	}
 
 	public void go() {
-		// chatPanel = new ChattingPanel();
-		// chatPanel.settingPanel();
-		
 		String ip = "127.0.0.1";
 		String port = "5000";
-		
+
 		setUpNetworking(ip, port);
 		Thread readerThread = new Thread(new IncomingReader());
 		readerThread.start();
-		
+
 		logIn();
-		// after success to setUpNetwork and login, show Panel
 		setPanel();
-		
-	} /** End go(). */
-	
-	public void logIn(){
-		int y = (int)(Math.random() * 20);
-		int x = (int)(Math.random() * 20);
-		Location initialLocation = new Location(y, x);	// random Location
-		loginUser = new User(initialLocation,name);
+
 	}
-	
+
+	/** End go(). */
+
+	public void logIn() {
+		int y = (int) (Math.random() * 20);
+		int x = (int) (Math.random() * 20);
+		Location initialLocation = new Location(y, x); // random Location
+		loginUser = new User(name, initialLocation);
+	}
+
 	public void setUpNetworking(String ip, String port) {
 		try {
 			sock = new Socket(ip, Integer.parseInt(port));
 			System.out.println("[Info] socket success");
 		} catch (Exception e) {
-			System.out.println("[Error] ip or port is not correct");
+			System.out.println("[Error] socket failed");
 		}
 		try {
 			InputStreamReader streamReader = new InputStreamReader(sock.getInputStream());
 			reader = new BufferedReader(streamReader);
 			writer = new PrintWriter(sock.getOutputStream());
 
-			// chatPanel.getReaderAndWriter(reader, writer);
-			System.out.println("networking established");
-			
-			// network connection ���� ���� user ����
+			System.out.println("[Info] networking established");
 		} catch (IOException ex) {
+			System.out.println("[Error] networking failed");
 			ex.printStackTrace();
 		} // end try
-	} /** End setUpNetworking(). */
+	}
+
+	/** End setUpNetworking(). */
 
 	public class SendButtonListener implements ActionListener {
 		@Override
@@ -154,98 +151,70 @@ public class Client {
 			outgoing.setText("");
 			outgoing.requestFocus();
 		}
-	} /** End class sendButtonListener. */
-	
-	
-	public void processCommand(String[] commandAndArguments){
+	}
+
+	/** End class sendButtonListener. */
+
+	public void processCommand(String name, String[] commandAndArguments) {
 		String command = commandAndArguments[0];
 		if ("MOVE".equals(command)) {
 			int y = Integer.parseInt(commandAndArguments[1]);
 			int x = Integer.parseInt(commandAndArguments[2]);
-			moveUser(y, x);
-		} else if("STATUS".equals(command)){
-			//print user status
-			
+			moveUser(name, y, x);
+		} else if ("STATUS".equals(command)) {
+			printStatus();
 		} else if ("EXIT".equals(command)) {
 			System.exit(0);
 		}
 	}
-	public void moveUser(int y, int x){
+
+	public void moveUser(String name, int y, int x) {
 		map.put(name, new ArrayList<Integer>(Arrays.asList(y, x)));
-		_userMap.put(new User(name), new Location(y, x));
-		String name = "";
-		Map<Integer, Map<Integer, User>> toPrintUsers = new HashMap<Integer, Map<Integer, User>>();
-		
-		
-		for (Entry<User, Location> userAndLocation : _userMap.entrySet()){
-			User user = userAndLocation.getKey();
-			Location location = userAndLocation.getValue();
+
+		User user = _userMap.get(name);
+		if (user != null) {
+			user.setUserLocation(y, x);
+		} else {
+			user = new User(name, new Location(y, x));
+		}
+		_userMap.put(name, user);
+
+		Map<Integer, Map<Integer, User>> locations = new HashMap<Integer, Map<Integer, User>>();
+
+		for (Entry<String, User> nameAndUser : _userMap.entrySet()) {
+			name = nameAndUser.getKey();
+			user = nameAndUser.getValue();
+			Location location = user.getUserLocation();
 			int locY = location.getLocationY();
 			int locX = location.getLocationX();
-			Map<Integer, User> rows = toPrintUsers.get(y);
-			if(rows == null){
+			Map<Integer, User> rows = locations.get(locY);
+			if (rows == null) {
 				rows = new HashMap<Integer, User>();
-				toPrintUsers.put(locY, rows);
+				locations.put(locY, rows);
 			}
 			rows.put(locX, user);
-			System.out.println("[Info] made user : " + toPrintUsers.get(y).get(x).getUserName());
 		}
-		
-		
-		// map�� name�� key�� �������� ������ѳ�����? ���� User��ü�� ���� �ʿ䰡 ���� �� ������.
-		// find git hub above, change that
-		Map<Integer, Map<Integer, String>> locations = new HashMap<Integer, Map<Integer, String>>();
-		for (Entry<String, List<Integer>> keyAndValue : map.entrySet()) {
-			name = keyAndValue.getKey();
-			List<Integer> yAndX = keyAndValue.getValue();
-			y = yAndX.get(0);
-			x = yAndX.get(1);
-			Map<Integer, String> rows = locations.get(y);
-			if (rows == null) {
-				rows = new HashMap<Integer, String>();
-				locations.put(y, rows);
-			}
-			rows.put(x, name);
-		}
-		// place to determine isNearEnemy
-		
-		
-//		printU sers(locations);
-		printUsers2(toPrintUsers);
+
+		// call Attack and Change user Status
+
+		// map�� name�� key�� �������� ������ѳ�����? ���� User��ü�� ���� �ʿ䰡
+		// ���� �� ������.
+		printUsers(locations);
 	}
-	public void printUsers(Map<Integer, Map<Integer, String>> locations){
-		
-		incoming.setText("");
-		for (int i = 0; i < 20; i++) {
-			StringBuffer stringBuffer = new StringBuffer();
-			for (int j = 0; j < 20; j++) {
-				Map<Integer, String> rows = locations.get(i);
-				if (rows != null) {
-					name = rows.get(j);
-					if (name != null) {
-						stringBuffer.append("\t").append(name);
-						continue;
-					}
-				}
-				stringBuffer.append("\t.");
-			}
-			incoming.append(stringBuffer.toString());
-			incoming.append("\n");
-		}
-	}
-	
-	public void printUsers2(Map<Integer, Map<Integer, User>> locations){
+
+	public void printUsers(Map<Integer, Map<Integer, User>> locations) {
 		incoming.setTabSize(2);
 		incoming.setText("");
 		String name = "";
+
 		for (int i = 0; i < 20; i++) {
 			StringBuffer stringBuffer = new StringBuffer();
 			for (int j = 0; j < 20; j++) {
-				// nullPointerException occured...
 				Map<Integer, User> rows = locations.get(i);
 				if (rows != null) {
-					name = rows.get(j).getUserName();
-					if (name != null) {
+					User user = rows.get(j);
+					if (user != null) {
+						name = user.getUserName();
 						stringBuffer.append("\t").append(name);
 						continue;
 					}
@@ -256,6 +225,14 @@ public class Client {
 			incoming.append("\n");
 		}
 	}
+
+	public void printStatus() {
+		incoming.setText("");
+		for (Entry<String, User> users : _userMap.entrySet()) {
+			users.getValue().printUserStatus(incoming);
+		}
+	}
+
 	public class IncomingReader implements Runnable {
 
 		@Override
@@ -263,27 +240,16 @@ public class Client {
 			String message;
 			try {
 				while ((message = reader.readLine()) != null) {
+					try {
+						String[] nameAndCommand = message.split(" : ");
+						String name = nameAndCommand[0];
+						String command = nameAndCommand[1];
+						String[] commandAndArguments = command.split(" ");
 
-					// Move order
-					String[] nameAndCommand = message.split(" : ");
-					String name = nameAndCommand[0];
-					String command = nameAndCommand[1];
-					String[] commandAndArguments = command.split(" ");
-					
-					processCommand(commandAndArguments);
-					
-					// map ���� ����   
-					// name -> user ����
-					// map<int, map<int, string>>
-					// 1. map���� �����ų��?
-					// 2. list�� ��������
-					// �ϴ� list�� ���� (static���� ����)
-					
-					
-					//���� Game���� ���ư��� ��?���� �������� ��
-					// ���� ������ MOVE �����? �ɵ����� ��
-					// ���߿� �����ϱⰡ ���� �� ����
-					
+						processCommand(name, commandAndArguments);
+					} catch (ArrayIndexOutOfBoundsException idxE) {
+
+					}
 				}
 			} catch (Exception ex) {
 				ex.printStackTrace();

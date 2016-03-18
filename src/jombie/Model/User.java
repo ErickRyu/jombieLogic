@@ -1,6 +1,8 @@
 package jombie.Model;
 
 import java.util.ArrayList;
+
+import javax.swing.JTextArea;
 /** Discrete Location from User class. */
 public class User implements Comparable<User> {
 	private Location location;
@@ -36,7 +38,7 @@ public class User implements Comparable<User> {
 		return getUserLocation().getLocationY() - user.getUserLocation().getLocationY();
 	}
 
-	public User(Location location, String userName) {
+	public User(String userName, Location location) {
 		this.location = location;
 		this.userName = userName;
 		this.hp = 100;
@@ -117,12 +119,12 @@ public class User implements Comparable<User> {
 		return this.hp;
 	}
 
-	public void printUserStatus() {
-		System.out.println("Name\t :  " + userName);
-		System.out.println("Position : (" + location.getLocationY() + ", " + location.getLocationX() + ")");
-		System.out.println("Hp\t :  " + hp);
-		System.out.println(isJombie ? "Jombie" : "Person");
-		System.out.println(isDead ? "Dead\n" : "Alive\n");
+	public void printUserStatus(JTextArea incoming) {
+		incoming.append("Name\t :  " + userName + "\n");
+		incoming.append("Position : (" + location.getLocationY() + ", " + location.getLocationX() + ")\n");
+		incoming.append("Hp\t :  " + hp + "\n");
+		incoming.append(isJombie ? "Jombie\n" : "Person\n");
+		incoming.append(isDead ? "Dead\n\n" : "Alive\n\n");
 	}
 	
 	public void printUserStatus(boolean isLoginUserJombie) {

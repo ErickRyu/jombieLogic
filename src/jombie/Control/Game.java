@@ -135,7 +135,6 @@ public class Game {
 				if (other.isDead() || user == other) {
 					continue;
 				}
-
 				int diff_y = other.getUserLocation().getLocationY() - user.getUserLocation().getLocationY();
 				if (diff_y >= -possibleAttackRange && diff_y <= possibleAttackRange) {
 					int diff_x = other.getUserLocation().getLocationX() - user.getUserLocation().getLocationX();
@@ -150,7 +149,7 @@ public class Game {
 		}
 	}
 
-	private void attack(User user1, User user2) {
+	private void attack(User user1/*<< login user*/, User user2) {
 		if (user1.isJombie() && !user2.isJombie()) {
 			user2.beAttacked();
 			if (user2.getUserHP() <= 0) {
