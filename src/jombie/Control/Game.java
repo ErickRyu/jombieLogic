@@ -3,6 +3,7 @@ package jombie.Control;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Scanner;
 
 import jombie.Model.Location;
@@ -148,7 +149,30 @@ public class Game {
 			}
 		}
 	}
-
+	public void isNearEnemy(HashMap<String, User> userMap) {
+		
+		for(User user : userMap.values()){
+			user.resetNearEnemy();
+			if (user.isDead()) {
+				continue;
+			}
+			for(User other : userMap.values()){
+				if (other.isDead() || user == other) {
+					continue;
+				}
+				int diff_y = other.getUserLocation().getLocationY() - user.getUserLocation().getLocationY();
+				if (diff_y >= -possibleAttackRange && diff_y <= possibleAttackRange) {
+					int diff_x = other.getUserLocation().getLocationX() - user.getUserLocation().getLocationX();
+					if (diff_x >= -possibleAttackRange && diff_x <= possibleAttackRange && user.isJombie() ^ other.isJombie()) {
+						user.addNearEnemy(other);
+						if (user.isJombie()) {
+							attack(user, other);
+						}
+					}
+				}
+			}
+		}
+	}
 	private void attack(User user1/*<< login user*/, User user2) {
 		if (user1.isJombie() && !user2.isJombie()) {
 			user2.beAttacked();

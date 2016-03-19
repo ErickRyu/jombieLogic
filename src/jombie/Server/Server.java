@@ -8,6 +8,8 @@ import java.net.Socket;
 //import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import jombie.Control.Game;
 /** Import java.awt.event.*; */
 
 public class Server {
@@ -62,9 +64,11 @@ public class Server {
 			String messages;
 
 			try {
+//				Game game = new Game();
 				while ((messages = reader.readLine()) != null) {
 					System.out.println("read " + messages);
 					tellEveryone(messages);
+//					game.isNearEnemy();
 				}
 			} catch (Exception ex) {
 				ex.printStackTrace();

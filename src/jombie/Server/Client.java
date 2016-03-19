@@ -1,8 +1,6 @@
 package jombie.Server;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -27,6 +25,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
+import jombie.Control.Game;
 import jombie.Model.Location;
 import jombie.Model.User;
 
@@ -46,9 +45,10 @@ public class Client {
 	private static User loginUser;
 	private static String ip;
 	private static String port;
-
+	private static Game game;
+	
 	private static Map<String, List<Integer>> map = new HashMap<String, List<Integer>>();
-	private static Map<String, User> _userMap = new HashMap<String, User>();
+	private static HashMap<String, User> _userMap = new HashMap<String, User>();
 
 	/** Map에 name을 key로 가지고 user클래스쪽에서 location정보와 나머지를 모두 읽어들여야겠음. */
 
@@ -113,6 +113,7 @@ public class Client {
 		int x = (int) (Math.random() * 20);
 		Location initialLocation = new Location(y, x); // random Location
 		loginUser = new User(name, initialLocation);
+		_userMap.put(name, loginUser);
 	}
 
 	public void setUpNetworking(String ip, String port) {
@@ -126,7 +127,8 @@ public class Client {
 			InputStreamReader streamReader = new InputStreamReader(sock.getInputStream());
 			reader = new BufferedReader(streamReader);
 			writer = new PrintWriter(sock.getOutputStream());
-
+			game = new Game();
+			
 			System.out.println("[Info] networking established");
 		} catch (IOException ex) {
 			System.out.println("[Error] networking failed");
@@ -169,7 +171,7 @@ public class Client {
 	}
 
 	public void moveUser(String name, int y, int x) {
-		map.put(name, new ArrayList<Integer>(Arrays.asList(y, x)));
+//		map.put(name, new ArrayList<Integer>(Arrays.asList(y, x)));
 
 		User user = _userMap.get(name);
 		if (user != null) {
@@ -194,12 +196,13 @@ public class Client {
 			}
 			rows.put(locX, user);
 		}
-
+		game.isNearEnemy(_userMap);
 		// call Attack and Change user Status
 
 		// map�� name�� key�� �������� ������ѳ�����? ���� User��ü�� ���� �ʿ䰡
 		// ���� �� ������.
 		printUsers(locations);
+
 	}
 
 	public void printUsers(Map<Integer, Map<Integer, User>> locations) {
