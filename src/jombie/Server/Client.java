@@ -46,7 +46,7 @@ public class Client {
 	private static String ip;
 	private static String port;
 	private static Game game;
-	
+	 
 	private static Map<String, List<Integer>> map = new HashMap<String, List<Integer>>();
 	private static HashMap<String, User> _userMap = new HashMap<String, User>();
 
@@ -94,7 +94,7 @@ public class Client {
 	}
 
 	public void go() {
-		String ip = "127.0.0.1";
+		String ip = "172.200.110.143";
 		String port = "5000";
 
 		setUpNetworking(ip, port);
@@ -201,6 +201,9 @@ public class Client {
 
 		// map�� name�� key�� �������� ������ѳ�����? ���� User��ü�� ���� �ʿ䰡
 		// ���� �� ������.
+		
+		//printUser는 실행시키지 않은채로 Location정보 Double로 변경시킨 것 실행.
+		
 		printUsers(locations);
 
 	}
