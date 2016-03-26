@@ -1,4 +1,8 @@
 ﻿# jombieLogic
+* 2016_03_26
+  * http://stackoverflow.com/questions/17009368/how-to-use-readobject-twice-in-socket-of-java
+  * server - client hashmap주고받도록 변경
+  * bug : 다른 컴퓨터로 접속할 경우 user정보들이 제각각으로 저장됨. server에서 userMap을 관리하도록 변경해야 함.
 * 2016_02_08
   * isThereAttack -> isAttackable로 이름 변경
   * Login User가 좀비 일 경우, 공격 가능한 위치에 있는 사람은 맵에 표시
